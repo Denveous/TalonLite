@@ -2,7 +2,7 @@
 # Talon
 
 > [!NOTE]
-> All of the free software provided is designed to respect your privacy, while being as simple to use as possible. Our free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
+> All of the free software provided is designed to respect your privacy, while being as simple to use as possible. Our free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/blob/main/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
 
 > This is a reupload/modified version of Talon debloat tool made by [Raven Development Team](https://ravendevteam.org/) that is able to run without internet. (full credits below)
 
