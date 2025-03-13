@@ -54,7 +54,7 @@ def apply_registry_changes():
     try:
         registry_modifications = [
             # Visual changes
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 0), # Align taskbar to the left
+            #(winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 0), # Align taskbar to the left
             #(winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", winreg.REG_DWORD, 0), # Set Windows apps to dark theme
             #(winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "SystemUsesLightTheme", winreg.REG_DWORD, 0), # Set Windows to dark theme
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0), #Fix the  Get an app for 'ms-gamingoverlay' popup
@@ -81,13 +81,13 @@ def apply_registry_changes():
     except Exception as e:
         log(f"Error applying registry changes: {e}")
 
-
-
 """ Run a script to remove Edge, and prevent reinstallation """
 def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
-        script_path = "./edge_vanisher.ps1"
+        # Determine the base path for the scripts
+        base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
+        script_path = os.path.join(base_path, "edge_vanisher.ps1")
         log(f"Loading Edge Vanisher script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -109,25 +109,27 @@ def run_edge_vanisher():
         if process.returncode == 0:
             log("Edge Vanisher execution completed successfully")
             log(f"Process output: {process.stdout}")
-            run_oouninstall()
+            run_oouninstall()  # Call the next function
         else:
             log(f"Edge Vanisher execution failed with return code: {process.returncode}")
             log(f"Process error: {process.stderr}")
-            run_oouninstall()
+            run_oouninstall()  # Call the next function
             
     except IOError as e:
         log(f"File I/O error while accessing Edge Vanisher script: {str(e)}")
-        run_oouninstall()
+        run_oouninstall()  # Call the next function
     except Exception as e:
         log(f"Unexpected error during Edge Vanisher execution: {str(e)}")
-        run_oouninstall()
+        run_oouninstall()  # Call the next function
 
 
 """ Run a script to remove OneDrive and Outlook """
 def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
-        script_path = "./uninstall_oo.ps1"
+        # Determine the base path for the scripts
+        base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
+        script_path = os.path.join(base_path, "uninstall_oo.ps1")
         log(f"Loading OO uninstall script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -146,17 +148,14 @@ def run_oouninstall():
         if process.returncode == 0:
             log("Office Online uninstallation completed successfully")
             log(f"Process stdout: {process.stdout}")
-            run_tweaks()
+            # Call any further functions if needed
         else:
             log(f"Office Online uninstallation failed with return code: {process.returncode}")
             log(f"Process stderr: {process.stderr}")
             log(f"Process stdout: {process.stdout}")
-            run_tweaks()
             
     except Exception as e:
         log(f"Unexpected error during OO uninstallation: {str(e)}")
-        run_tweaks()
-
 
 """ Run ChrisTitusTech's WinUtil to debloat the system (Thanks Chris, you're a legend!) """
 def run_tweaks():

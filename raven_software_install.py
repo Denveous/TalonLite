@@ -1,26 +1,16 @@
 """ Import the necessary modules for the program to work """
 import os
 import sys
-import json
 import logging
 import platform
 import subprocess
 import zipfile
 from pathlib import Path
-from tqdm import tqdm
+import shutil
 
 """ Set up logging """
 def log(message):
     logging.info(message)
-
-""" Utility function to fetch the packages.json file """
-def get_packages_json():
-    try:
-        with open('packages.json', 'r') as f:
-            return json.load(f)
-    except Exception as e:
-        log(f"Error loading packages.json: {e}")
-        return None
 
 """ Add exclusions for Raven software to Windows Defender """
 def add_defender_exclusion(path):
@@ -45,9 +35,8 @@ def get_installation_path():
     return install_path
 
 """ Utility function to copy a file """
-def download_file(path, destination, desc="Copying"):
+def download_file(path, destination):
     try:
-        import shutil
         shutil.copy(path, destination)
         log(f"Copied {path} to {destination}")
         return True
@@ -86,55 +75,66 @@ def create_shortcut(target_dir, shortcut_name):
         return False
 
 """ Install the specified package """
-def install_package(package, install_dir):
+def install_package(zip_name, install_dir):
     platform_name = platform.system()
     if platform_name != "Windows":
-        log(f"Package {package['name']} is not available for {platform_name}")
+        log(f"Package {zip_name} is not available for {platform_name}")
         return False
     
-    package_dir = install_dir / package["name"]
+    package_dir = install_dir / zip_name.replace('.zip', '')
     package_dir.mkdir(parents=True, exist_ok=True)
-    
-    path = package["path"]
-    file_name = path.split("/")[-1]
-    download_path = package_dir / file_name
 
-    log(f"Installing {package['name']} v{package['version']}...")
-
-    if not download_file(path, download_path, f"Copying {package['name']}"):
+    if hasattr(sys, '_MEIPASS'):
+        temp_dir = Path(sys._MEIPASS)
+    else:
+        log("Not running in a bundled environment.")
         return False
 
-    if not extract_zip(download_path, package_dir):
+    zip_path = temp_dir / zip_name
+
+    log(f"Installing {zip_name} from {zip_path}...")
+
+    if not zip_path.exists():
+        log(f"Zip file {zip_path} not found.")
         return False
 
-    if package["shortcut"]:
-        create_shortcut(package_dir, package["name"])
+    if not download_file(zip_path, install_dir / zip_name):
+        return False
 
-    log(f"Successfully installed {package['name']}")
+    if not extract_zip(install_dir / zip_name, package_dir):
+        return False
+
+    create_shortcut(package_dir, zip_name.replace('.zip', ''))
+
+    log(f"Successfully installed {zip_name}")
     return True
 
-""" Begin the process of fetching the package list then installing them """
+""" Begin the process of installing hardcoded packages """
 def run_toolbox():
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     log("Fetching package list...")
-    packages_data = get_packages_json()
-    if not packages_data:
-        log("Failed to fetch packages data")
-        return False
+
+    # Hardcoded list of zip file names, because fuck using a json.
+    zip_files = [
+        "scratchpad.zip",
+        "redact.zip",
+        "filediff.zip",
+        "resmon.zip"
+    ]
 
     install_dir = get_installation_path()
     install_dir.mkdir(parents=True, exist_ok=True)
 
     success = True
-    for package in packages_data["packages"]:
-        if not install_package(package, install_dir):
+    for zip_name in zip_files:
+        if not install_package(zip_name, install_dir):
             success = False
-            log(f"Failed to install {package['name']}")
+            log(f"Failed to install {zip_name}")
         else:
-            log(f"Successfully installed {package['name']}")
+            log(f"Successfully installed {zip_name}")
 
     log("Installation process completed" + (" successfully" if success else " with some failures"))
     return success
@@ -155,3 +155,4 @@ def main():
 if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)
+

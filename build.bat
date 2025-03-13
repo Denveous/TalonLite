@@ -13,7 +13,6 @@ nuitka --onefile --standalone --enable-plugin=pyqt5 --remove-output --windows-ic
 --include-data-files="additional_software_offer.png=additional_software_offer.png" ^
 --include-data-files="barebones.json=barebones.json" ^
 --include-data-files="DesktopBackground.png=DesktopBackground.png" ^
---include-data-files="packages.json=packages.json" ^
 --include-data-files="scratchpad.zip=scratchpad.zip" ^
 --include-data-files="redact.zip=redact.zip" ^
 --include-data-files="filediff.zip=filediff.zip" ^
