@@ -5,4 +5,4 @@
 __pycache__/
 *.pyc
 .DS_Store
-nuitka-crash-report.xml
+*nuitka-crash-*.xml*
