@@ -85,7 +85,6 @@ def apply_registry_changes():
 def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
-        # Determine the base path for the scripts
         base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
         script_path = os.path.join(base_path, "edge_vanisher.ps1")
         log(f"Loading Edge Vanisher script from: {script_path}")
@@ -109,25 +108,24 @@ def run_edge_vanisher():
         if process.returncode == 0:
             log("Edge Vanisher execution completed successfully")
             log(f"Process output: {process.stdout}")
-            run_oouninstall()  # Call the next function
+            run_oouninstall() 
         else:
             log(f"Edge Vanisher execution failed with return code: {process.returncode}")
             log(f"Process error: {process.stderr}")
-            run_oouninstall()  # Call the next function
+            run_oouninstall() 
             
     except IOError as e:
         log(f"File I/O error while accessing Edge Vanisher script: {str(e)}")
-        run_oouninstall()  # Call the next function
+        run_oouninstall()  
     except Exception as e:
         log(f"Unexpected error during Edge Vanisher execution: {str(e)}")
-        run_oouninstall()  # Call the next function
+        run_oouninstall()  
 
 
 """ Run a script to remove OneDrive and Outlook """
 def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
-        # Determine the base path for the scripts
         base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
         script_path = os.path.join(base_path, "uninstall_oo.ps1")
         log(f"Loading OO uninstall script from: {script_path}")
@@ -148,7 +146,6 @@ def run_oouninstall():
         if process.returncode == 0:
             log("Office Online uninstallation completed successfully")
             log(f"Process stdout: {process.stdout}")
-            # Call any further functions if needed
         else:
             log(f"Office Online uninstallation failed with return code: {process.returncode}")
             log(f"Process stderr: {process.stderr}")
