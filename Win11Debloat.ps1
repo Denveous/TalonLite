@@ -63,7 +63,6 @@ param (
     [switch]$HideShare
 )
 
-# Show error if current PowerShell environment does not have LanguageMode set to FullLanguage 
 if ($ExecutionContext.SessionState.LanguageMode -ne "FullLanguage") {
    Write-Host "Error: Win11Debloat is unable to run on your system. PowerShell execution is restricted by security policies" -ForegroundColor Red
    Write-Output ""
@@ -77,54 +76,35 @@ Write-Output "------------------------------------------------------------------
 Write-Output " Win11Debloat Script - Get"
 Write-Output "-------------------------------------------------------------------------------------------"
 
-# Get the temporary directory
-$tempDir = [System.IO.Path]::GetTempPath()
-
-# Search for the Win11Debloat-master.zip file in the temporary directory
-$debloatZipPath = Get-ChildItem -Path $tempDir -Recurse -Filter "Win11Debloat-master.zip" -ErrorAction SilentlyContinue
-
-# Check if the ZIP file was found
-if ($debloatZipPath -eq $null) {
-    Write-Host "Error: Win11Debloat-master.zip not found in the temporary directory." -ForegroundColor Red
-    Exit
+if ($env:MEIPASS) {
+    $scriptPath = Join-Path -Path $env:MEIPASS -ChildPath "Win11Debloat\Win11Debloat.ps1"
 } else {
-    Write-Host "Found Win11Debloat-master.zip at: $($debloatZipPath.FullName)"
+    $scriptPath = Join-Path -Path (Get-Location) -ChildPath "Win11Debloat\Win11Debloat.ps1"
 }
 
-# Unzip archive to Win11Debloat folder in TEMP
-$win11DebloatTempPath = "$env:TEMP\Win11Debloat"
-Expand-Archive $debloatZipPath.FullName $win11DebloatTempPath -Force
+if (-Not (Test-Path $scriptPath)) {
+    Write-Host "Error: Win11Debloat.ps1 not found." -ForegroundColor Red
+    Exit
+} else {
+    Write-Host "Found Win11Debloat.ps1 at: $scriptPath"
+}
 
 Write-Output "> Running Win11Debloat..."
 
-# Make list of arguments to pass on to the script
 $arguments = $($PSBoundParameters.GetEnumerator() | ForEach-Object {
     if ($_.Value -eq $true) {
         "-$($_.Key)"
     } 
     else {
-         "-$($_.Key) ""$($_.Value)
+         "-$($_.Key) ""$($_.Value)"
     }
 })
 
-# Run Win11Debloat script with the provided arguments
-$debloatScriptPath = Join-Path -Path $win11DebloatTempPath -ChildPath "Win11Debloat-master\Win11Debloat.ps1"
-$debloatProcess = Start-Process powershell.exe -PassThru -ArgumentList "-executionpolicy bypass -File `"$debloatScriptPath`" $arguments" -Verb RunAs
+$debloatProcess = Start-Process powershell.exe -PassThru -ArgumentList "-executionpolicy bypass -File `"$scriptPath`" $arguments" -Verb RunAs
 
-# Wait for the process to finish before continuing
 if ($null -ne $debloatProcess) {
     $debloatProcess.WaitForExit()
 }
 
-# Remove all remaining script files, except for CustomAppsList and SavedSettings files
-if (Test-Path $win11DebloatTempPath) {
-    Write-Output ""
-    Write-Output "> Cleaning up..."
-
-    # Cleanup, remove Win11Debloat directory
-    Get-ChildItem -Path $win11DebloatTempPath -Exclude CustomAppsList,SavedSettings | Remove-Item -Recurse -Force
-}
-
 Write-Output "-------------------------------------------------------------------------------------------"
-Write-Output " Win11Debloat process completed."
-Write-Output "-------------------------------------------------------------------------------------------"
+Write-Output " Raphi's Win11Debloat process completed."

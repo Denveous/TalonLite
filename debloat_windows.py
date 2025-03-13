@@ -139,13 +139,16 @@ def run_oouninstall():
         if process.returncode == 0:
             log("Office Online uninstallation completed successfully")
             log(f"Process stdout: {process.stdout}")
+            run_tweaks()
         else:
             log(f"Office Online uninstallation failed with return code: {process.returncode}")
             log(f"Process stderr: {process.stderr}")
             log(f"Process stdout: {process.stdout}")
+            run_tweaks()
             
     except Exception as e:
         log(f"Unexpected error during OO uninstallation: {str(e)}")
+        run_tweaks()
 
 """ Run ChrisTitusTech's WinUtil to debloat the system (Thanks Chris, you're a legend!) """
 def run_tweaks():
@@ -220,10 +223,8 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        script_url = ""
         temp_dir = tempfile.gettempdir()
         script_path = os.path.join(temp_dir, "Win11Debloat.ps1")
-        log(f"Attempting to download Windows configuration script from: {script_url}")
         log(f"Target script path: {script_path}")
         
         response = requests.get(script_url)
@@ -306,7 +307,7 @@ def run_updatepolicychanger():
     log("Starting UpdatePolicyChanger script execution...")
     log("Checking system state before UpdatePolicyChanger execution...")
     try:
-        script_path = "./update_policy_changer.ps1"
+        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "update_policy_changer.ps1")
         log(f"Loading UpdatePolicyChanger script from: {script_path}")
         
         if not os.path.exists(script_path):

@@ -21,7 +21,12 @@ nuitka --onefile --standalone --enable-plugin=pyqt5 --remove-output --windows-ic
 --include-data-files="update_policy_changer.ps1=update_policy_changer.ps1" ^
 --include-data-files="uninstall_oo.ps1=uninstall_oo.ps1" ^
 --include-data-files="edge_vanisher.ps1=edge_vanisher.ps1" ^
---include-data-files="Win11Debloat-master.zip=Win11Debloat-master.zip" ^
+--include-data-files="Win11Debloat\Appslist.txt=Win11Debloat\Appslist.txt" ^
+--include-data-files="Win11Debloat\Get.ps1=Win11Debloat\Get.ps1" ^
+--include-data-files="Win11Debloat\Run.bat=Win11Debloat\Run.bat" ^
+--include-data-dir="Win11Debloat\Assets=Win11Debloat\Assets" ^
+--include-data-dir="Win11Debloat\Regfiles=Win11Debloat\Regfiles" ^
+--include-data-dir="Win11Debloat\Start=Win11Debloat\Start" ^
 --msvc=latest init.py
 
 pause

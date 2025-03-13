@@ -62,17 +62,20 @@ def create_shortcut(target_dir, shortcut_name):
         os.system(f'cmd /c mklink "{shortcut_path}" "{exe_file}"')
         log(f"Created shortcut for {shortcut_name} on Desktop")
 
-        start_menu_folder = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', shortcut_name)
+        start_menu_folder = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Raven Dev Team')
         os.makedirs(start_menu_folder, exist_ok=True)
 
         start_menu_shortcut_path = os.path.join(start_menu_folder, f"{shortcut_name}.lnk")
         os.system(f'cmd /c mklink "{start_menu_shortcut_path}" "{exe_file}"')
         log(f"Created shortcut for {shortcut_name} in Start Menu")
 
+        os.system('taskkill /f /im explorer.exe && start explorer.exe')
+
         return True
     except Exception as e:
         log(f"Failed to create shortcut: {e}")
         return False
+
 
 """ Install the specified package """
 def install_package(zip_name, install_dir):
