@@ -227,13 +227,6 @@ def run_winconfig():
         script_path = os.path.join(temp_dir, "Win11Debloat.ps1")
         log(f"Target script path: {script_path}")
         
-        response = requests.get(script_url)
-        log(f"Download response status code: {response.status_code}")
-        
-        with open(script_path, "wb") as file:
-            file.write(response.content)
-        log("Windows configuration script successfully saved to disk")
-        
         powershell_command = (
             f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
             f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
