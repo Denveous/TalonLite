@@ -10,6 +10,7 @@ import shutil
 import time
 import logging
 import json
+from pathlib import Path
 
 """ Set up the log file """
 LOG_FILE = "talon.txt"

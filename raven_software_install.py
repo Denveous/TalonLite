@@ -15,16 +15,18 @@ def log(message):
 """ Add exclusions for Raven software to Windows Defender """
 def add_defender_exclusion(path):
     try:
-        subprocess.run(
+        result = subprocess.run(
             ['powershell', '-Command', 
              f'Add-MpPreference -ExclusionPath "{path}"'],
             check=True,
-            capture_output=True
+            capture_output=True,
+            text=True
         )
         log(f"Added Windows Defender exclusion for: {path}")
+        log(f"PowerShell Output: {result.stdout}")
         return True
-    except Exception as e:
-        log(f"Failed to add Windows Defender exclusion: {e}")
+    except subprocess.CalledProcessError as e:
+        log(f"Failed to add Windows Defender exclusion: {e.stderr}")
         return False
 
 """ Utility function to get the installation path for Raven software """
@@ -33,16 +35,6 @@ def get_installation_path():
     install_path.mkdir(parents=True, exist_ok=True)
     add_defender_exclusion(str(install_path))
     return install_path
-
-""" Utility function to copy a file """
-def download_file(path, destination):
-    try:
-        shutil.copy(path, destination)
-        log(f"Copied {path} to {destination}")
-        return True
-    except Exception as e:
-        log(f"Copy error: {e}")
-        return False
 
 """ Extract ZIP file to the target directory """
 def extract_zip(zip_path, extract_to):
@@ -68,7 +60,15 @@ def create_shortcut(target_dir, shortcut_name):
 
         exe_file = exe_files[0]
         os.system(f'cmd /c mklink "{shortcut_path}" "{exe_file}"')
-        log(f"Created shortcut for {shortcut_name}")
+        log(f"Created shortcut for {shortcut_name} on Desktop")
+
+        start_menu_folder = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', shortcut_name)
+        os.makedirs(start_menu_folder, exist_ok=True)
+
+        start_menu_shortcut_path = os.path.join(start_menu_folder, f"{shortcut_name}.lnk")
+        os.system(f'cmd /c mklink "{start_menu_shortcut_path}" "{exe_file}"')
+        log(f"Created shortcut for {shortcut_name} in Start Menu")
+
         return True
     except Exception as e:
         log(f"Failed to create shortcut: {e}")
@@ -84,11 +84,10 @@ def install_package(zip_name, install_dir):
     package_dir = install_dir / zip_name.replace('.zip', '')
     package_dir.mkdir(parents=True, exist_ok=True)
 
-    if hasattr(sys, '_MEIPASS'):
+    if getattr(sys, 'frozen', False):
         temp_dir = Path(sys._MEIPASS)
     else:
-        log("Not running in a bundled environment.")
-        return False
+        temp_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 
     zip_path = temp_dir / zip_name
 
@@ -98,10 +97,7 @@ def install_package(zip_name, install_dir):
         log(f"Zip file {zip_path} not found.")
         return False
 
-    if not download_file(zip_path, install_dir / zip_name):
-        return False
-
-    if not extract_zip(install_dir / zip_name, package_dir):
+    if not extract_zip(zip_path, package_dir):
         return False
 
     create_shortcut(package_dir, zip_name.replace('.zip', ''))
