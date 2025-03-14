@@ -5,6 +5,20 @@ from PyQt5.QtGui import QColor, QFont, QFontDatabase, QPixmap
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 import os
 import sys
+import logging
+
+""" Set up the log file """
+LOG_FILE = "talon.txt"
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+""" Utility function to log outputs """
+def log(message):
+    logging.info(message)
+    print(message)
 
 class AnimatedButton(QPushButton):
     def __init__(self, text, color, hover_color=None, is_firefox=False):
@@ -67,12 +81,8 @@ class BrowserSelectScreen(QWidget):
         layout.addLayout(title_layout)
 
         image_label = QLabel(self)
-
-        if hasattr(sys, "_MEIPASS"):
-            image_path = os.path.join(sys._MEIPASS, "media/browser_selection.png")
-        else:
-            image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/browser_selection.png"))
-
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(base_path, "media\\browser_selection.png")
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(1920 * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -137,10 +147,9 @@ class BrowserSelectScreen(QWidget):
 
     def load_chakra_petch_font(self):
         try:
-            if hasattr(sys, "_MEIPASS"):
-                font_path = os.path.join(sys._MEIPASS, "media/ChakraPetch-Regular.ttf")
-            else:
-                font_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/ChakraPetch-Regular.ttf"))
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            font_path = os.path.join(base_path, "media\\ChakraPetch-Regular.ttf")
+            log(f"Font check: {font_path}")
 
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:

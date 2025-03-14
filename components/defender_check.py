@@ -17,13 +17,13 @@ class DefenderCheck(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.load_chakra_petch_font()
-        self.setWindowTitle("Raven Talon")
+        self.setWindowTitle("Raven TalonX")
         self.setFixedSize(600, 200)
         self.setStyleSheet("background-color: black; color: white;")
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
 
-        self.message_label = QLabel("Windows Defender is currently enabled, which causes Talon to not work properly.\n\nPlease disable Windows Defender. Talon will automatically proceed afterwards.")
+        self.message_label = QLabel("Windows Defender is currently enabled, which causes TalonX to not work properly.\n\nPlease disable Windows Defender. TalonX will automatically proceed afterwards.")
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: white; font-size: 18px; padding: 12px; line-height: 1.5;")
         self.message_label.setFont(QFont("Chakra Petch", 16))
@@ -44,13 +44,8 @@ class DefenderCheck(QWidget):
     """ Load the Chakra Petch font, which is used for the UI """
     def load_chakra_petch_font(self):
         try:
-            if getattr(sys, 'frozen', False):
-                base_path = sys._MEIPASS
-            else:
-                base_path = os.path.dirname(os.path.abspath(__file__))
-
-            font_path = os.path.join(base_path, "../media/ChakraPetch-Regular.ttf")
-
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            font_path =  os.path.join(base_path, "media\\ChakraPetch-Regular.ttf")
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
                 print("Failed to load font.")

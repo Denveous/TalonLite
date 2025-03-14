@@ -45,9 +45,8 @@ if not is_admin():
 def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
-        base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
-        script_path = os.path.join(base_path, "components/edge_vanisher.ps1")
-
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(base_path, "components\\edge_vanisher.ps1")
         log(f"Loading Edge Vanisher script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -87,8 +86,8 @@ def run_edge_vanisher():
 def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
-        base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
-        script_path = os.path.join(base_path, "components/uninstall_oo.ps1")
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(base_path, "components\\uninstall_oo.ps1")
         log(f"Loading OO uninstall script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -190,20 +189,17 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        if hasattr(sys, "_MEIPASS"):
-            script_path = os.path.join(sys._MEIPASS, "components/run_debloat.ps1")
-        else:
-            script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "components/run_debloat.ps1"))
-
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(base_path, "components\\run_debloat.ps1")
         log(f"Debloat Target script path: {script_path}")
-
+        components_path = os.path.join(base_path, "components")
         powershell_command = (
             f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
             f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
             f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
             f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
             f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC "
-            f"-DisableMouseAcceleration -ScriptPath '{os.path.dirname(script_path)}'"
+            f"-DisableMouseAcceleration -ScriptPath '{os.path.dirname(components_path)}'"
         )
 
         log(f"Executing PowerShell command with parameters:")
@@ -269,7 +265,8 @@ def run_winconfig():
 def run_updatepolicychanger():
     log("Starting UpdatePolicyChanger script execution...")
     try:
-        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "components/update_policy_changer.ps1")
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(base_path, "components\\update_policy_changer.ps1")
         log(f"Loading UpdatePolicyChanger script from: {script_path}")
         
         if not os.path.exists(script_path):

@@ -13,10 +13,8 @@ def set_wallpaper(image_path):
         print(f"Error setting background: {e}")
 
 def main():
-    if hasattr(sys, "_MEIPASS"):
-        image_path = os.path.join(sys._MEIPASS, "media/DesktopBackground.png")
-    else:
-        image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/DesktopBackground.png"))
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(base_path, "media\\DesktopBackground.png")
     set_wallpaper(image_path)
 
 if __name__ == "__main__":

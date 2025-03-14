@@ -75,10 +75,8 @@ class RavenAppScreen(QWidget):
         body_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(body_label)
         image_label = QLabel(self)
-        if hasattr(sys, "_MEIPASS"):
-            image_path = os.path.join(sys._MEIPASS, "media/additional_software_offer.png")
-        else:
-            image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/additional_software_offer.png"))
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(base_path, "media\\additional_software_offer.png")
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(self.width() * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -100,10 +98,8 @@ class RavenAppScreen(QWidget):
     """ Load the Chakra Petch font, which is used for the UI """
     def load_chakra_petch_font(self):
         try:
-            if hasattr(sys, "_MEIPASS"):
-                font_path = os.path.join(sys._MEIPASS, "media/ChakraPetch-Regular.ttf")
-            else:
-                font_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/ChakraPetch-Regular.ttf"))
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            font_path = os.path.join(base_path, "media\\ChakraPetch-Regular.ttf")
 
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
