@@ -129,12 +129,15 @@ def run_tweaks():
         sys.exit(1)
 
     try:
-        json_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "barebones.json")
+        json_path = os.path.dirname(__file__), "barebones.json")
 
         log(f"Using config from: {json_path}")
 
         temp_dir = tempfile.gettempdir()
         log_file = os.path.join(temp_dir, "cttwinutil.log")
+
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(base_path, "components\\winutil.ps1")
 
         command = [
             "powershell",
@@ -142,10 +145,10 @@ def run_tweaks():
             "-NonInteractive",
             "-Command",
             f"$ErrorActionPreference = 'SilentlyContinue'; " +
-            f"iex \"& {{ $(irm christitus.com/win) }} -Config '{json_path}' -Run\" *>&1 | " +
+            f"iex \"& {{ $(irm '{script_path}') }} -Config '{json_path}' -Run\" *>&1 | " +
             "Tee-Object -FilePath '" + log_file + "'"
         ]
-        
+                
         process = subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
