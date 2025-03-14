@@ -47,6 +47,7 @@ def run_edge_vanisher():
     try:
         base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
         script_path = os.path.join(base_path, "components/edge_vanisher.ps1")
+
         log(f"Loading Edge Vanisher script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -189,9 +190,12 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "components/run_debloat.ps1")
+        if hasattr(sys, "_MEIPASS"):
+            script_path = os.path.join(sys._MEIPASS, "components/run_debloat.ps1")
+        else:
+            script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "components/run_debloat.ps1"))
 
-        log(f"Target script path: {script_path}")
+        log(f"Debloat Target script path: {script_path}")
 
         powershell_command = (
             f"Set-ExecutionPolicy Bypass -Scope Process -Force; "

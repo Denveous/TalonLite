@@ -165,11 +165,11 @@ def main():
             logging.error(f"Error applying background settings: {e}")
         
         try:
-            logging.info("Applying Windows registry modifications and customizations...")
-            components.debloat_windows.apply_registry_changes()
-            logging.info("Debloat and customization complete.")
+            logging.info("Removing Microsoft Edge...")
+            components.debloat_windows.run_edge_vanisher()
+            logging.info("Microsoft Edge removal complete.")
         except Exception as e:
-            logging.error(f"Error applying registry changes: {e}")
+            logging.error(f"Error removing Microsoft Edge: {e}")
         
         logging.info("All installations and configurations completed.")
         install_screen.close()

@@ -67,11 +67,12 @@ class BrowserSelectScreen(QWidget):
         layout.addLayout(title_layout)
 
         image_label = QLabel(self)
-        if getattr(sys, 'frozen', False):
-            base_path = sys._MEIPASS
+
+        if hasattr(sys, "_MEIPASS"):
+            image_path = os.path.join(sys._MEIPASS, "media/browser_selection.png")
         else:
-            base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_path, "../media/browser_selection.png")
+            image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/browser_selection.png"))
+
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(1920 * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -136,11 +137,11 @@ class BrowserSelectScreen(QWidget):
 
     def load_chakra_petch_font(self):
         try:
-            if getattr(sys, 'frozen', False):
-                base_path = sys._MEIPASS
+            if hasattr(sys, "_MEIPASS"):
+                font_path = os.path.join(sys._MEIPASS, "media/ChakraPetch-Regular.ttf")
             else:
-                base_path = os.path.dirname(os.path.abspath(__file__))
-            font_path = os.path.join(base_path, "media/ChakraPetch-Regular.ttf")
+                font_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "media/ChakraPetch-Regular.ttf"))
+
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
                 print("Failed to load font.")

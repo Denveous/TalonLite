@@ -1,5 +1,5 @@
 
-# Talon
+# TalonX (Offline)
 
 > [!NOTE]
 > All of the free software provided is designed to respect your privacy, while being as simple to use as possible. This free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/blob/main/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
@@ -8,7 +8,11 @@
 
 Simple utility to debloat Windows in just a few clicks.
 
-* Added option to skip browser select.
++ Added option to skip browser select.
++ Added close button to defender check screen.
++ Added credit for the original background creator.
++ TalonX now selects _High Performance_ power profile.
+- Removed watermarking from Background. _(Only for the sake of minimalism, credits still remain to creator of Talon & RecklessThor4.)_
 * Modified to run without an internet connection.
 
 > [!CAUTION]
