@@ -76,7 +76,7 @@ class RavenAppScreen(QWidget):
         layout.addWidget(body_label)
         image_label = QLabel(self)
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_path, "media\\additional_software_offer.png")
+        image_path = os.path.join(base_path, "\\media\\additional_software_offer.png") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\additional_software_offer.png")
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(self.width() * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -99,8 +99,7 @@ class RavenAppScreen(QWidget):
     def load_chakra_petch_font(self):
         try:
             base_path = os.path.dirname(os.path.abspath(__file__))
-            font_path = os.path.join(base_path, "media\\ChakraPetch-Regular.ttf")
-
+            font_path = os.path.join(base_path, "\\media\\ChakraPetch-Regular.ttf") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\ChakraPetch-Regular.ttf")
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
                 print("Failed to load font.")

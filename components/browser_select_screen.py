@@ -82,7 +82,7 @@ class BrowserSelectScreen(QWidget):
 
         image_label = QLabel(self)
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_path, "media\\browser_selection.png")
+        image_path = os.path.join(base_path, "\\media\\browser_selection.png") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\browser_selection.png")
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(1920 * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -148,7 +148,7 @@ class BrowserSelectScreen(QWidget):
     def load_chakra_petch_font(self):
         try:
             base_path = os.path.dirname(os.path.abspath(__file__))
-            font_path = os.path.join(base_path, "media\\ChakraPetch-Regular.ttf")
+            font_path = os.path.join(base_path, "\\media\\ChakraPetch-Regular.ttf") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\ChakraPetch-Regular.ttf")
             log(f"Font check: {font_path}")
 
             font_id = QFontDatabase.addApplicationFont(font_path)
