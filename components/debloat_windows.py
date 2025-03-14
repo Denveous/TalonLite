@@ -117,7 +117,7 @@ def run_oouninstall():
         log(f"Unexpected error during OO uninstallation: {str(e)}")
         run_tweaks()
 
-""" Run ChrisTitusTech's WinUtil to debloat the system (Thanks Chris, you're a legend!) """
+""" Run ChrisTitusTech's WinUtil to debloat the system (Thanks Chris, you're a legend! https://christitus.com/win) """
 def run_tweaks():
     logging.basicConfig(
         level=logging.INFO,
@@ -129,15 +129,18 @@ def run_tweaks():
         sys.exit(1)
 
     try:
-        json_path = os.path.dirname(__file__), "barebones.json")
+
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(base_path, "\\components\\barebones.json") if getattr(sys, 'frozen', False) else os.path.join(base_path, "barebones.json")
+        script_path = os.path.join(base_path, "\\components\\winutil.ps1") if getattr(sys, 'frozen', False) else os.path.join(base_path, "winutil.ps1")
+        log(f"Json Path {json_path}")
+        log(f"Script Path {script_path}")
 
         log(f"Using config from: {json_path}")
 
         temp_dir = tempfile.gettempdir()
         log_file = os.path.join(temp_dir, "cttwinutil.log")
 
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\winutil.ps1")
 
         command = [
             "powershell",
