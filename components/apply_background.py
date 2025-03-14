@@ -17,7 +17,7 @@ def main():
         script_dir = sys._MEIPASS
     else:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-    image_path = os.path.join(script_dir, "DesktopBackground.png")
+    image_path = os.path.join(script_dir, "../media/DesktopBackground.png")
     set_wallpaper(image_path)
 
 if __name__ == "__main__":

@@ -2,11 +2,14 @@
 # Talon
 
 > [!NOTE]
-> All of the free software provided is designed to respect your privacy, while being as simple to use as possible. Our free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/blob/main/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
+> All of the free software provided is designed to respect your privacy, while being as simple to use as possible. This free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/blob/main/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
 
-> This is a reupload/modified version of Talon debloat tool made by [Raven Development Team](https://ravendevteam.org/) that is able to run without internet. (full credits below)
+> This is a reupload of Talon (1.1.4) debloat tool made by [Raven Development Team](https://ravendevteam.org/), this version modified to run without an internet connection with some minor tweaks to the original code. (full credits below)
 
-Simple utility to debloat Windows in 2 clicks.
+Simple utility to debloat Windows in just a few clicks.
+
+* Added option to skip browser select.
+* Modified to run without an internet connection.
 
 > [!CAUTION]
 > Talon is designed to be used on **freshly installed Windows 11 systems**. Trying to use Talon on an already in-use system, or a any older versions of Windows, is not guaranteed to work and can cause some apps to stop working properly and system corruption!

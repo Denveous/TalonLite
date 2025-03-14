@@ -6,3 +6,5 @@ __pycache__/
 *.pyc
 .DS_Store
 *nuitka-crash-*.xml*
+talon.txt
+**/__pycache__/

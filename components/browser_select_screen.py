@@ -71,7 +71,7 @@ class BrowserSelectScreen(QWidget):
             base_path = sys._MEIPASS
         else:
             base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_path, "browser_selection.png")
+        image_path = os.path.join(base_path, "../media/browser_selection.png")
         pixmap = QPixmap(image_path)
         scaled_pixmap = pixmap.scaledToWidth(int(1920 * 0.6), Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)
@@ -140,7 +140,7 @@ class BrowserSelectScreen(QWidget):
                 base_path = sys._MEIPASS
             else:
                 base_path = os.path.dirname(os.path.abspath(__file__))
-            font_path = os.path.join(base_path, "ChakraPetch-Regular.ttf")
+            font_path = os.path.join(base_path, "media/ChakraPetch-Regular.ttf")
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
                 print("Failed to load font.")

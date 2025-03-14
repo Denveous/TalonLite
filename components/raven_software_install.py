@@ -62,12 +62,15 @@ def create_shortcut(target_dir, shortcut_name):
         os.system(f'cmd /c mklink "{shortcut_path}" "{exe_file}"')
         log(f"Created shortcut for {shortcut_name} on Desktop")
 
-        start_menu_folder = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Raven Dev Team')
+        start_menu_folder = os.path.join(os.environ['ProgramData'], "Microsoft", "Windows", "Start Menu", "Programs", "Raven Dev Team")
         os.makedirs(start_menu_folder, exist_ok=True)
 
         start_menu_shortcut_path = os.path.join(start_menu_folder, f"{shortcut_name}.lnk")
         os.system(f'cmd /c mklink "{start_menu_shortcut_path}" "{exe_file}"')
         log(f"Created shortcut for {shortcut_name} in Start Menu")
+
+        pin_command = f"$s = (New-Object -ComObject shell.application).NameSpace('{start_menu_folder}').Items() | Where-Object {{ $_.Name -eq '{shortcut_name}.lnk' }}; $s.InvokeVerb('pin to start')"
+        subprocess.run(["powershell", "-Command", pin_command], capture_output=True, text=True)
 
         os.system('taskkill /f /im explorer.exe && start explorer.exe')
 
@@ -87,12 +90,7 @@ def install_package(zip_name, install_dir):
     package_dir = install_dir / zip_name.replace('.zip', '')
     package_dir.mkdir(parents=True, exist_ok=True)
 
-    if getattr(sys, 'frozen', False):
-        temp_dir = Path(sys._MEIPASS)
-    else:
-        temp_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-
-    zip_path = temp_dir / zip_name
+    zip_path = (Path(sys._MEIPASS) / "media" / zip_name) if getattr(sys, 'frozen', False) else (Path(os.path.dirname(os.path.abspath(__file__))) / "media" / zip_name)
 
     log(f"Installing {zip_name} from {zip_path}...")
 

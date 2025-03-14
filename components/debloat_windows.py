@@ -39,47 +39,14 @@ if not is_admin():
     )
     sys.exit(0)
 
-""" Apply modifications done via the Windows registry """
-def apply_registry_changes():
-    log("Applying registry changes...")
-    try:
-        registry_modifications = [
-            # Visual changes
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 1), # Align taskbar to the center
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", winreg.REG_DWORD, 0), # Set Windows apps to dark theme
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "SystemUsesLightTheme", winreg.REG_DWORD, 0), # Set Windows to dark theme
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0), #Fix the  Get an app for 'ms-gamingoverlay' popup
-            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR", "Value", winreg.REG_DWORD, 0), # Disable Game DVR (Reduces FPS Drops)
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "MenuShowDelay", winreg.REG_SZ, "0"),# Reduce menu delay for snappier UI
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 0),# Disable minimize/maximize animations
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging 
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),# Reduce hover time for tooltips and UI elements
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),# Show file extensions in Explorer (useful for security and organization)
-            (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\\CurrentControlSet\\Control\\Power", "PowerPlan", winreg.REG_SZ, "8c5e7fda-3b9c-4c3b-8c3b-3b3c3b3c3b3c")  # Set power plan to High Performance
-        ]
-        for root_key, key_path, value_name, value_type, value in registry_modifications:
-            try:
-                with winreg.CreateKeyEx(root_key, key_path, 0, winreg.KEY_SET_VALUE) as key:
-                    winreg.SetValueEx(key, value_name, 0, value_type, value)
-                    log(f"Applied {value_name} to {key_path}")
-            except Exception as e:
-                log(f"Failed to modify {value_name} in {key_path}: {e}")
-        log("Registry changes applied successfully.")
-        subprocess.run(["taskkill", "/F", "/IM", "explorer.exe"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["start", "explorer.exe"], shell=True)
-        log("Explorer restarted to apply registry changes.")
-        run_edge_vanisher()
-        log("Edge Vanisher started successfully")
-        
-    except Exception as e:
-        log(f"Error applying registry changes: {e}")
+
 
 """ Run a script to remove Edge, and prevent reinstallation """
 def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
         base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
-        script_path = os.path.join(base_path, "edge_vanisher.ps1")
+        script_path = os.path.join(base_path, "components/edge_vanisher.ps1")
         log(f"Loading Edge Vanisher script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -120,7 +87,7 @@ def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
         base_path = sys._MEIPASS if hasattr(sys, "_MEIPASS") else Path(__file__).parent
-        script_path = os.path.join(base_path, "uninstall_oo.ps1")
+        script_path = os.path.join(base_path, "components/uninstall_oo.ps1")
         log(f"Loading OO uninstall script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -218,32 +185,32 @@ def run_tweaks():
         os._exit(1)
 
 
-
 """ Run Raphi's Win11Debloat script to further debloat the system (Thanks Raphire! Source: https://win11debloat.raphi.re/Win11Debloat.ps1) """
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        temp_dir = tempfile.gettempdir()
-        script_path = os.path.join(temp_dir, "Win11Debloat.ps1")
+        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "components/run_debloat.ps1")
+
         log(f"Target script path: {script_path}")
-        
+
         powershell_command = (
             f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
             f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
             f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
-            f"-TaskbarAlignCenter -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC"
-            f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC"
-            f"-DisableMouseAcceleration -DisableCortana"
+            f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
+            f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC "
+            f"-DisableMouseAcceleration -ScriptPath '{os.path.dirname(script_path)}'"
         )
+
         log(f"Executing PowerShell command with parameters:")
         log(f"Command: {powershell_command}")
-        
+
         process = subprocess.run(
             ["powershell", "-Command", powershell_command],
             capture_output=True,
             text=True
         )
-        
+
         if process.returncode == 0:
             log("Windows configuration completed successfully")
             log(f"Process stdout: {process.stdout}")
@@ -294,13 +261,11 @@ def run_winconfig():
             run_updatepolicychanger()
 
 
-
 """ Run a script to establish an update policy which only accepts security updates """
 def run_updatepolicychanger():
     log("Starting UpdatePolicyChanger script execution...")
-    log("Checking system state before UpdatePolicyChanger execution...")
     try:
-        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "update_policy_changer.ps1")
+        script_path = os.path.join(sys._MEIPASS if hasattr(sys, "_MEIPASS") else os.path.dirname(__file__), "components/update_policy_changer.ps1")
         log(f"Loading UpdatePolicyChanger script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -308,50 +273,70 @@ def run_updatepolicychanger():
             return
         
         log("Preparing PowerShell command execution...")
-        powershell_command = (
-            f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-            f"& '{script_path}'; exit" 
-        )
+        powershell_command = f"Set-ExecutionPolicy Bypass -Scope Process -Force; & \"{script_path}\"; exit"
         log(f"PowerShell command prepared: {powershell_command}")
         
-        try:
-            log("Executing PowerShell command...")
-            process = subprocess.run(
-                ["powershell", "-Command", powershell_command],
-                capture_output=True,
-                text=True,
-            )
-            
-            log(f"PowerShell process completed with return code: {process.returncode}")
-            log(f"Process stdout length: {len(process.stdout)}")
-            log(f"Process stderr length: {len(process.stderr)}")
-            
-            if process.stdout:
-                log(f"Process output: {process.stdout}")
-            if process.stderr:
-                log(f"Process errors: {process.stderr}")
-            
-            if process.returncode == 0:
-                log("UpdatePolicyChanger execution completed successfully")
-                log("Preparing to finalize installation...")
-                finalize_installation()
-            else:
-                log(f"UpdatePolicyChanger execution failed with return code: {process.returncode}")
-                log("Proceeding with finalization despite failure...")
-                finalize_installation()
-                
-        except subprocess.TimeoutExpired:
-            log("PowerShell command execution timed out after 5 minutes")
-            finalize_installation()
-        except subprocess.SubprocessError as e:
-            log(f"Error executing PowerShell command: {e}")
-            finalize_installation()
+        process = subprocess.run(
+            ["powershell", "-Command", powershell_command],
+            capture_output=True,
+            text=True,
+            timeout=300  # Increase timeout if necessary
+        )
+        
+        log(f"PowerShell process completed with return code: {process.returncode}")
+        log(f"Process stdout: {process.stdout}")
+        log(f"Process stderr: {process.stderr}")
+        
+        if process.returncode == 0:
+            log("UpdatePolicyChanger execution completed successfully")
+            apply_registry_changes()
+        else:
+            log(f"UpdatePolicyChanger execution failed with return code: {process.returncode}")
+            apply_registry_changes()
             
     except Exception as e:
         log(f"Critical error in UpdatePolicyChanger: {e}")
-        log("Proceeding to finalization due to critical error...")
-        finalize_installation()
+        apply_registry_changes()
 
+    except Exception as e:
+        log(f"Critical error in UpdatePolicyChanger: {e}")
+        log("Proceeding to registry changes due to critical error...")
+        apply_registry_changes()
+
+""" Apply modifications done via the Windows registry """
+def apply_registry_changes():
+    log("Applying registry changes...")
+    try:
+        registry_modifications = [
+            # Visual changes
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 1), # Align taskbar to the center
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", winreg.REG_DWORD, 0), # Set Windows apps to dark theme
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "SystemUsesLightTheme", winreg.REG_DWORD, 0), # Set Windows to dark theme
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0), #Fix the  Get an app for 'ms-gamingoverlay' popup
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR", "Value", winreg.REG_DWORD, 0), # Disable Game DVR (Reduces FPS Drops)
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "MenuShowDelay", winreg.REG_SZ, "0"),# Reduce menu delay for snappier UI
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 0),# Disable minimize/maximize animations
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging 
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),# Reduce hover time for tooltips and UI elements
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),# Show file extensions in Explorer (useful for security and organization)
+            (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\\CurrentControlSet\\Control\\Power", "PowerPlan", winreg.REG_SZ, "8c5e7fda-3b9c-4c3b-8c3b-3b3c3b3c3b3c")  # Set power plan to High Performance
+        ]
+        for root_key, key_path, value_name, value_type, value in registry_modifications:
+            try:
+                with winreg.CreateKeyEx(root_key, key_path, 0, winreg.KEY_SET_VALUE) as key:
+                    winreg.SetValueEx(key, value_name, 0, value_type, value)
+                    log(f"Applied {value_name} to {key_path}")
+            except Exception as e:
+                log(f"Failed to modify {value_name} in {key_path}: {e}")
+        log("Registry changes applied successfully.")
+        subprocess.run(["taskkill", "/F", "/IM", "explorer.exe"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["start", "explorer.exe"], shell=True)
+        log("Explorer restarted to apply registry changes.")
+        finalize_installation()
+        log("Wrapping up installation.")
+        
+    except Exception as e:
+        log(f"Error applying registry changes: {e}")
 
 """ Finalize installation by restarting """
 def finalize_installation():
@@ -366,7 +351,6 @@ def finalize_installation():
             log(f"Failed to restart system: {e}")
 
 
-
 """ Run the program """
 if __name__ == "__main__":
-    apply_registry_changes()
+    run_edge_vanisher()

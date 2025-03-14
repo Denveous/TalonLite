@@ -5,11 +5,9 @@ import threading
 import os
 import sys
 from PyQt5.QtGui import QFont, QFontDatabase
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy, QPushButton
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 import wmi
-
-
 
 """ Create a class for the Defender check UI """
 class DefenderCheck(QWidget):
@@ -24,6 +22,7 @@ class DefenderCheck(QWidget):
         self.setStyleSheet("background-color: black; color: white;")
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
+
         self.message_label = QLabel("Windows Defender is currently enabled, which causes Talon to not work properly.\n\nPlease disable Windows Defender. Talon will automatically proceed afterwards.")
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: white; font-size: 18px; padding: 12px; line-height: 1.5;")
@@ -31,6 +30,12 @@ class DefenderCheck(QWidget):
         self.message_label.setWordWrap(True)
         self.message_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.message_label)
+
+        self.close_button = QPushButton("Close")
+        self.close_button.setStyleSheet("font-size: 16px; padding: 10px;")
+        self.close_button.clicked.connect(self.close)  # Connect button click to close method
+        layout.addWidget(self.close_button)
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.check_defender_status)
         self.check_defender_status(immediate_check=True)
@@ -44,7 +49,7 @@ class DefenderCheck(QWidget):
             else:
                 base_path = os.path.dirname(os.path.abspath(__file__))
 
-            font_path = os.path.join(base_path, "ChakraPetch-Regular.ttf")
+            font_path = os.path.join(base_path, "../media/ChakraPetch-Regular.ttf")
 
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
@@ -89,4 +94,4 @@ class DefenderCheck(QWidget):
             return False
         except Exception as e:
             print(f"Error checking Defender status: {e}")
-            return False  # if there's an error, assume Defender is disabled
+            return False  

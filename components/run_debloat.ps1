@@ -60,11 +60,13 @@ param (
     [switch]$DisableGiveAccessTo, 
     [switch]$HideGiveAccessTo,
     [switch]$DisableShare, 
-    [switch]$HideShare
+    [switch]$HideShare,
+    [string]$ScriptPath  
 )
 
+# Show error if current powershell environment does not have LanguageMode set to FullLanguage 
 if ($ExecutionContext.SessionState.LanguageMode -ne "FullLanguage") {
-   Write-Host "Error: Win11Debloat is unable to run on your system. PowerShell execution is restricted by security policies" -ForegroundColor Red
+   Write-Host "Error: Win11Debloat is unable to run on your system. Powershell execution is restricted by security policies" -ForegroundColor Red
    Write-Output ""
    Write-Output "Press enter to exit..."
    Read-Host | Out-Null
@@ -73,38 +75,28 @@ if ($ExecutionContext.SessionState.LanguageMode -ne "FullLanguage") {
 
 Clear-Host
 Write-Output "-------------------------------------------------------------------------------------------"
-Write-Output " Win11Debloat Script - Get"
+Write-Output " Win11Debloat Script "
 Write-Output "-------------------------------------------------------------------------------------------"
 
-if ($env:MEIPASS) {
-    $scriptPath = Join-Path -Path $env:MEIPASS -ChildPath "Win11Debloat\Win11Debloat.ps1"
-} else {
-    $scriptPath = Join-Path -Path (Get-Location) -ChildPath "Win11Debloat\Win11Debloat.ps1"
-}
-
-if (-Not (Test-Path $scriptPath)) {
-    Write-Host "Error: Win11Debloat.ps1 not found." -ForegroundColor Red
-    Exit
-} else {
-    Write-Host "Found Win11Debloat.ps1 at: $scriptPath"
-}
-
-Write-Output "> Running Win11Debloat..."
-
+# Make list of arguments to pass on to the script
 $arguments = $($PSBoundParameters.GetEnumerator() | ForEach-Object {
     if ($_.Value -eq $true) {
         "-$($_.Key)"
     } 
     else {
-         "-$($_.Key) ""$($_.Value)"
+         "-$($_.Key) ""$($_.Value)"""
     }
 })
 
-$debloatProcess = Start-Process powershell.exe -PassThru -ArgumentList "-executionpolicy bypass -File `"$scriptPath`" $arguments" -Verb RunAs
+Write-Output ""
+Write-Output "> Running Win11Debloat..."
 
+# Run Win11Debloat script with the provided arguments
+$debloatProcess = Start-Process powershell.exe -PassThru -ArgumentList "-executionpolicy bypass -File '$ScriptPath\Win11Debloat.ps1' $arguments" -Verb RunAs
+
+# Wait for the process to finish before continuing
 if ($null -ne $debloatProcess) {
     $debloatProcess.WaitForExit()
 }
 
-Write-Output "-------------------------------------------------------------------------------------------"
-Write-Output " Raphi's Win11Debloat process completed."
+Write-Output ""
