@@ -46,7 +46,8 @@ def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\edge_vanisher.ps1")
+        script_path = os.path.join(base_path, "components\\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
+
         log(f"Loading Edge Vanisher script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -87,7 +88,8 @@ def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\uninstall_oo.ps1")
+        script_path = os.path.join(base_path, "components\\uninstall_oo.ps1" if "__compiled__" in globals() else "uninstall_oo.ps1")
+
         log(f"Loading OO uninstall script from: {script_path}")
         
         if not os.path.exists(script_path):
@@ -129,10 +131,9 @@ def run_tweaks():
         sys.exit(1)
 
     try:
-
         base_path = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(base_path, "\\components\\barebones.json") if getattr(sys, 'frozen', False) else os.path.join(base_path, "barebones.json")
-        script_path = os.path.join(base_path, "\\components\\winutil.ps1") if getattr(sys, 'frozen', False) else os.path.join(base_path, "winutil.ps1")
+        json_path = os.path.join(base_path, "components\\barebones.json" if "__compiled__" in globals() else "barebones.json")
+        script_path = os.path.join(base_path, "components\\winutil.ps1" if "__compiled__" in globals() else "winutil.ps1")
         log(f"Json Path {json_path}")
         log(f"Script Path {script_path}")
 
@@ -196,7 +197,7 @@ def run_winconfig():
     log("Starting Windows configuration process...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\run_debloat.ps1")
+        script_path = os.path.join(base_path, "components\\winutil.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
         log(f"Debloat Target script path: {script_path}")
         components_path = os.path.join(base_path, "components")
         powershell_command = (
@@ -272,7 +273,7 @@ def run_updatepolicychanger():
     log("Starting UpdatePolicyChanger script execution...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\update_policy_changer.ps1")
+        script_path = os.path.join(base_path, "components\\update_policy_changer.ps1" if "__compiled__" in globals() else "update_policy_changer.ps1")
         log(f"Loading UpdatePolicyChanger script from: {script_path}")
         
         if not os.path.exists(script_path):

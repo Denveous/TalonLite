@@ -14,7 +14,7 @@ def set_wallpaper(image_path):
 
 def main():
     base_path = os.path.dirname(os.path.abspath(__file__))
-    image_path = os.path.join(base_path, "\\media\\DesktopBackground.png") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\DesktopBackground.png")
+    image_path = os.path.join(base_path, "media\\DesktopBackground.png" if "__compiled__" in globals() else "..\\media\\DesktopBackground.png")
     set_wallpaper(image_path)
 
 if __name__ == "__main__":

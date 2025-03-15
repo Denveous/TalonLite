@@ -45,7 +45,7 @@ class DefenderCheck(QWidget):
     def load_chakra_petch_font(self):
         try:
             base_path = os.path.dirname(os.path.abspath(__file__))
-            font_path = os.path.join(base_path, "\\media\\ChakraPetch-Regular.ttf") if getattr(sys, 'frozen', False) else os.path.join(base_path, "..\\media\\ChakraPetch-Regular.ttf")
+            font_path = os.path.join(base_path, "media\\ChakraPetch-Regular.ttf" if "__compiled__" in globals() else "..\\media\\ChakraPetch-Regular.ttf")            
             font_id = QFontDatabase.addApplicationFont(font_path)
             if font_id == -1:
                 print("Failed to load font.")
