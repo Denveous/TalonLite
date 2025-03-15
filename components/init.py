@@ -8,7 +8,6 @@ import logging
 from PyQt5.QtWidgets import QApplication
 from browser_select_screen import BrowserSelectScreen
 from defender_check import DefenderCheck
-from raven_app_screen import RavenAppScreen
 from install_screen import InstallScreen
 import debloat_windows
 import browser_install
