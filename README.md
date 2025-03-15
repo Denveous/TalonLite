@@ -1,19 +1,21 @@
 
-# TalonX (Offline)
+# TalonX 
 
-> [!NOTE]
+> [!NOTES]
 > All of the free software provided is designed to respect your privacy, while being as simple to use as possible. This free software is licensed under the [BSD-3-Clause license](https://github.com/Denveous/Talon-Offline/blob/main/BSD-3-Clause.txt). By using our software, you acknowledge and agree to the terms of the license.
 
-> This is a reupload of Talon (1.1.4) debloat tool made by [Raven Development Team](https://ravendevteam.org/), this version modified to run without an internet connection with some minor tweaks to the original code. (full credits below)
+> This is a reupload of Talon (v1.1.4) debloat tool made by [Raven Development Team](https://ravendevteam.org/), this version is modified to run without an internet connection with some minor tweaks to the original code. (full credits below)
 
 Simple utility to debloat Windows in just a few clicks.
 
+> [!CHANGES]
+
 + Added option to skip browser select.
 + Added close button to defender check screen.
-+ Added credit for the original background creator.
++ Added credit for the original background creator to contributors list.
 + TalonX now selects _High Performance_ power profile.
-- Removed watermarking from Background. _(Only for the sake of minimalism, credits still remain to creator of Talon & RecklessThor4.)_
-* Modified to run without an internet connection.
+- Removed watermarking from Background. _(Only for the sake of minimalism, credits to RecklessThor4.)_
+* Modified base code to run without an internet connection.
 
 > [!CAUTION]
 > TalonX is designed to be used on **freshly installed Windows 11 systems**. Trying to use TalonX on an already in-use system, or a any older versions of Windows, is not guaranteed to work and can cause some apps to stop working properly and system corruption!
