@@ -172,24 +172,20 @@ def run_tweaks():
                         creationflags=subprocess.CREATE_NO_WINDOW
                     )
                     run_winconfig()
-                    sys.exit(0)
 
             if time.time() - last_output_time > timeout_duration:
                 log("No output received from winutil for 60 seconds, moving on to debloat...")
                 process.terminate()
                 run_winconfig()
-                sys.exit(0)
 
             if process.poll() is not None:
                 run_winconfig()
-                sys.exit(0)
 
         return False
 
     except Exception as e:
         log(f"Error: {str(e)}")
         run_winconfig()
-        sys.exit(0)
 
 """ Run Raphi's Win11Debloat script to further debloat the system (Thanks Raphire! Source: https://win11debloat.raphi.re/Win11Debloat.ps1) """
 def run_winconfig():
