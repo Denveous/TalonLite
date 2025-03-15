@@ -46,7 +46,7 @@ def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
+        script_path = os.path.join(base_path, r"components\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
 
         log(f"Loading Edge Vanisher script from: {script_path}")
         
@@ -88,7 +88,7 @@ def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\uninstall_oo.ps1" if "__compiled__" in globals() else "uninstall_oo.ps1")
+        script_path = os.path.join(base_path, r"components\uninstall_oo.ps1" if "__compiled__" in globals() else "uninstall_oo.ps1")
 
         log(f"Loading OO uninstall script from: {script_path}")
         
@@ -132,8 +132,8 @@ def run_tweaks():
 
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(base_path, "components\\barebones.json" if "__compiled__" in globals() else "barebones.json")
-        script_path = os.path.join(base_path, "components\\winutil.ps1" if "__compiled__" in globals() else "winutil.ps1")
+        json_path = os.path.join(base_path, r"components\barebones.json" if "__compiled__" in globals() else "barebones.json")
+        script_path = os.path.join(base_path, r"components\winutil.ps1" if "__compiled__" in globals() else "winutil.ps1")
         log(f"Json Path {json_path}")
         log(f"Script Path {script_path}")
 
@@ -141,7 +141,6 @@ def run_tweaks():
 
         temp_dir = tempfile.gettempdir()
         log_file = os.path.join(temp_dir, "cttwinutil.log")
-
 
         command = [
             "powershell",
@@ -163,23 +162,32 @@ def run_tweaks():
             creationflags=subprocess.CREATE_NO_WINDOW
         )
 
+        last_output_time = time.time()
+        timeout_duration = 60
+
         while True:
             output = process.stdout.readline()
             if output:
                 output = output.strip()
                 log(f"CTT Output: {output}")
+                last_output_time = time.time()
+
                 if "Tweaks are Finished" in output:
                     log("Detected completion message. Terminating...")
-
                     subprocess.run(
                         ["powershell", "-Command", "Stop-Process -Name powershell -Force"],
                         capture_output=True,
                         creationflags=subprocess.CREATE_NO_WINDOW
                     )
-
                     run_winconfig()
                     os._exit(0)
-            
+
+            if time.time() - last_output_time > timeout_duration:
+                log("No output received from winutil for 60 seconds, moving on to debloat...")
+                process.terminate()
+                run_winconfig()
+                os._exit(1)
+
             if process.poll() is not None:
                 run_winconfig()
                 os._exit(1)
@@ -191,33 +199,27 @@ def run_tweaks():
         run_winconfig()
         os._exit(1)
 
-
 """ Run Raphi's Win11Debloat script to further debloat the system (Thanks Raphire! Source: https://win11debloat.raphi.re/Win11Debloat.ps1) """
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\winutil.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        script_path = os.path.join(base_path, r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
         log(f"Debloat Target script path: {script_path}")
-        components_path = os.path.join(base_path, "components")
-        powershell_command = (
-            f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-            f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
-            f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
-            f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
-            f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC "
-            f"-DisableMouseAcceleration -ScriptPath '{os.path.dirname(components_path)}'"
-        )
-
-        log(f"Executing PowerShell command with parameters:")
-        log(f"Command: {powershell_command}")
-
         process = subprocess.run(
-            ["powershell", "-Command", powershell_command],
+            [
+                "powershell", 
+                "-Command", 
+                f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
+                f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
+                f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
+                f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
+                f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC "
+                f"-DisableMouseAcceleration -ScriptPath '{os.path.join(base_path, 'components')}'"
+            ],
             capture_output=True,
             text=True
         )
-
         if process.returncode == 0:
             log("Windows configuration completed successfully")
             log(f"Process stdout: {process.stdout}")
@@ -273,24 +275,17 @@ def run_updatepolicychanger():
     log("Starting UpdatePolicyChanger script execution...")
     try:
         base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, "components\\update_policy_changer.ps1" if "__compiled__" in globals() else "update_policy_changer.ps1")
+        script_path = os.path.join(base_path, r"components\update_policy_changer.ps1" if "__compiled__" in globals() else "update_policy_changer.ps1")
         log(f"Loading UpdatePolicyChanger script from: {script_path}")
-        
-        if not os.path.exists(script_path):
-            log("Script not found, please ensure it exists in the current directory.")
-            return
-        
         log("Preparing PowerShell command execution...")
         powershell_command = f"Set-ExecutionPolicy Bypass -Scope Process -Force; & \"{script_path}\"; exit"
         log(f"PowerShell command prepared: {powershell_command}")
-        
         process = subprocess.run(
             ["powershell", "-Command", powershell_command],
             capture_output=True,
             text=True,
             timeout=300  # Increase timeout if necessary
         )
-        
         log(f"PowerShell process completed with return code: {process.returncode}")
         log(f"Process stdout: {process.stdout}")
         log(f"Process stderr: {process.stderr}")
@@ -327,6 +322,8 @@ def apply_registry_changes():
             (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging 
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),# Reduce hover time for tooltips and UI elements
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),# Show file extensions in Explorer (useful for security and organization)
+            
+            # Other Changes
             (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\\CurrentControlSet\\Control\\Power", "PowerPlan", winreg.REG_SZ, "8c5e7fda-3b9c-4c3b-8c3b-3b3c3b3c3b3c")  # Set power plan to High Performance
         ]
         for root_key, key_path, value_name, value_type, value in registry_modifications:
