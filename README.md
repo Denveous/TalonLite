@@ -1,7 +1,10 @@
 # TalonX 
 
-> This is a fork of the Talon (v1.1.4) debloat tool made by the [Raven Development Team](https://ravendevteam.org/)
-> This version is modified to run without an internet connection and includes some minor tweaks to the original code. (Full credits below.) 🙌
+> **This is a fork of the Talon (v1.1.4) debloat tool made by the [Raven Development Team](https://ravendevteam.org/)**
+
+> **This version is modified to run __mostly__ (check note below) without an internet connection and includes some minor tweaks to the original code.** 
+
+> **To install a web browser a internet connection is still required, but an option to skip this was added if you already have a replacement for Microsoft Edge**
 
 **TalonX** is a simple utility to debloat Windows in just a few clicks. 🖱️
 
@@ -12,6 +15,7 @@
 - **Added:** Credit for the original background creator to the contributors list. 🙌
 - **Added:** TalonX now selects the _High Performance_ power profile. ⚡
 - **Removed:** Watermarking from the background (only for the sake of minimalism; credits to RecklessThor4). ✂️
+- **Removed:** "Extra" apps & selection screen made by **[Raven Development Team](https://ravendevteam.org/)**. ✂️
 - **Modified:** Base code to run without an internet connection. 🌐
 
 ## Usage Instructions 📋
@@ -21,7 +25,7 @@
 
 1. **Download** the latest version from the [Releases](https://github.com/Denveous/TalonX/releases/tag/Windows) page. 📥
 2. **Temporarily** disable **Windows Defender** 🛡️.
-3. **Run** the `TalonX.exe`. 🖥️
+3. **Run** `TalonX.exe`. 🖥️
 4. **Follow** the on-screen prompts to debloat your Windows system. 🛠️
 5. **Enjoy** a cleaner, faster Windows experience! 🎉
 

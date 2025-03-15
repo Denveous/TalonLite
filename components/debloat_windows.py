@@ -131,11 +131,6 @@ def run_tweaks():
         base_path = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(base_path, r"components\barebones.json" if "__compiled__" in globals() else "barebones.json")
         script_path = os.path.join(base_path, r"components\winutil.ps1" if "__compiled__" in globals() else "winutil.ps1")
-        log(f"Json Path {json_path}")
-        log(f"Script Path {script_path}")
-
-        log(f"Using config from: {json_path}")
-
         temp_dir = tempfile.gettempdir()
         log_file = os.path.join(temp_dir, "cttwinutil.log")
 
@@ -200,22 +195,25 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        #script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        script_path = "run_debloat.ps1" if "__compiled__" in globals() else os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1")
+
         log(f"Debloat Target script found: {script_path}")
         process = subprocess.run(
             [
                 "powershell", 
                 "-Command", 
                 f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-                f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
+                f"& \"{script_path}\" -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
                 f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
                 f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
                 f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended "
-                f"-DisableMouseAcceleration -ScriptPath '{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}'"
+                f"-DisableMouseAcceleration -ScriptPath \"{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}\""
             ],
             capture_output=True,
             text=True
         )
+
         if process.returncode == 0:
             log("Windows configuration completed successfully")
             log(f"Process stdout: {process.stdout}")

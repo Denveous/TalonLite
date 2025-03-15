@@ -11,7 +11,6 @@ from defender_check import DefenderCheck
 from raven_app_screen import RavenAppScreen
 from install_screen import InstallScreen
 import debloat_windows
-import raven_software_install
 import browser_install
 import windows_check
 import apply_background
@@ -118,20 +117,7 @@ def main():
             logging.info(f"Proceeding with installation of {selected_browser} browser...")
     except Exception as e:
         logging.error(f"Error during browser selection: {e}")
-    install_raven = None
-    try:
-        logging.info("Displaying Raven app installation screen...")
-        raven_app_screen = RavenAppScreen()
-        raven_app_screen.show()
-        while install_raven is None:
-            app.processEvents()
-            if raven_app_screen.selected_option is not None:
-                install_raven = raven_app_screen.selected_option
-        logging.info(f"Raven App Installation Decision: {'Yes' if install_raven else 'No'}")
-        raven_app_screen.close()
-    except Exception as e:
-        logging.error(f"Error during Raven app installation decision: {e}")
-    
+
     try:
         logging.info("Displaying installation screen...")
         install_screen = InstallScreen()
@@ -141,14 +127,6 @@ def main():
 
     """ Run the installation process """
     def perform_installation():
-        try:
-            if install_raven:
-                logging.info("Installing Raven software...")
-                raven_software_install.main()
-                logging.info("Raven software installed.")
-        except Exception as e:
-            logging.error(f"Error during Raven software installation: {e}")
-        
         if selected_browser != 'skip':
             try:
                 logging.info(f"Installing {selected_browser} browser...")
