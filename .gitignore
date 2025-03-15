@@ -2,10 +2,10 @@
 /dist/
 /build/
 *.spec
-__pycache__/
 *.pyc
 .DS_Store
 *nuitka-crash-*.xml*
-talon.txt
-**/talon.txt
+**/talonx.txt
+talonx.txt
 **/__pycache__/
+__pycache__/

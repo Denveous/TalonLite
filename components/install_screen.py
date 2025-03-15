@@ -13,7 +13,7 @@ from PyQt5.QtCore import Qt, QTimer
 class InstallScreen(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Talon Installer")
+        self.setWindowTitle("TalonX Installer")
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.showFullScreen()
         self.setStyleSheet("background-color: black;")
@@ -23,7 +23,7 @@ class InstallScreen(QWidget):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
         layout.setContentsMargins(0, 0, 0, 0)
-        title_label = QLabel("Installing Talon...")
+        title_label = QLabel("Installing TalonX...")
         title_label.setStyleSheet("color: white; font-weight: bold;")
         title_label.setFont(QFont("Chakra Petch", 24, QFont.Bold))
         title_label.setAlignment(Qt.AlignCenter)

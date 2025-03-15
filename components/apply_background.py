@@ -9,9 +9,9 @@ def set_wallpaper(image_path):
     try:
         result = ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
         if result:
-            print("Task completed.")
+            print("Wallpaper set.")
         else:
-            print("Task failed.")
+            print("Couldn't set wallpaper.")
     except Exception as e:
         print(f"Error setting background: {e}")
 
@@ -26,8 +26,8 @@ def main():
     install_path = get_installation_path()
     base_path = os.path.dirname(os.path.abspath(__file__))
     image_path = os.path.join(base_path, r"media\DesktopBackground.png" if "__compiled__" in globals() else r"..\media\DesktopBackground.png")
-    shutil.copy(image_path, install_path / "DesktopBackground.png") # Copy background to HD location for consistency. 
-    set_wallpaper(install_path / "DesktopBackground.png")
+    shutil.copy(image_path, f"{install_path}\\DesktopBackground.png") # Copy background to HD location for consistency. 
+    set_wallpaper(f"{install_path}\\DesktopBackground.png")
 
 if __name__ == "__main__":
     main()

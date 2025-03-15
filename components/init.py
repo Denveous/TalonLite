@@ -20,11 +20,11 @@ from PyQt5.QtCore import QTimer
 import platform
 import winreg
 
-""" Establish the version of Talon """
-TALON_VERSION = "1.1.4-customoffline"
+""" Establish the version of TalonX """
+TALONX_VERSION = "1.1.4 (customoffline)"
 
 """ Set up the log file """
-LOG_FILE = "talon.txt"
+LOG_FILE = "talonx.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.DEBUG,
@@ -71,10 +71,10 @@ def restart_as_admin():
     except Exception as e:
         logging.error(f"Error restarting as admin: {e}")
 
-""" Main function to begin Talon installation """
+""" Main function to begin TalonX installation """
 def main():
-    logging.info("Starting Talon Installer")
-    logging.info(f"Talon Version: {TALON_VERSION}")
+    logging.info("Starting TalonX Installer")
+    logging.info(f"TalonX Version: {TALONX_VERSION}")
     windows_info = get_windows_info()
     if windows_info:
         logging.info(f"Windows Version: {windows_info['product_name']}")

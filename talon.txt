@@ -1,0 +1,109 @@
+2025-03-15 16:01:08,565 - INFO - Starting Edge Vanisher script execution...
+2025-03-15 16:01:08,565 - INFO - Loading Edge Vanisher script from: G:\Development\Python\TalonX\components\edge_vanisher.ps1
+2025-03-15 16:01:08,566 - INFO - Executing PowerShell command: Set-ExecutionPolicy Bypass -Scope Process -Force; & 'G:\Development\Python\TalonX\components\edge_vanisher.ps1'; exit
+2025-03-15 16:01:09,697 - INFO - Edge Vanisher execution completed successfully
+2025-03-15 16:01:09,698 - INFO - Process output: Edge Vanisher started
+Starting Microsoft Edge uninstallation process...
+Terminating Edge processes...
+No running Edge processes found.
+Uninstalling Edge with setup...
+Removing Start Menu shortcuts...
+Cleaning Edge folders...
+Cleaning: C:\Program Files (x86)\Microsoft\Edge
+Cleaning: C:\Program Files (x86)\Microsoft\EdgeCore
+Cleaning Edge registry entries...
+Deleting registry key: HKCU:\Software\Microsoft\Edge
+Successfully deleted registry key: HKCU:\Software\Microsoft\Edge
+Deleting registry key: HKLM:\SOFTWARE\Microsoft\Edge
+Successfully deleted registry key: HKLM:\SOFTWARE\Microsoft\Edge
+[SC] OpenService FAILED 1060:
+
+The specified service does not exist as an installed service.
+
+[SC] OpenService FAILED 1060:
+
+The specified service does not exist as an installed service.
+
+[SC] OpenService FAILED 1060:
+
+The specified service does not exist as an installed service.
+
+
+Microsoft Edge uninstallation process completed!
+Creating protective Edge folders...
+Processing protective folder: C:\Program Files (x86)\Microsoft\Edge
+Success: C:\Program Files (x86)\Microsoft\Edge\Application
+Processing protective folder: C:\Program Files (x86)\Microsoft\EdgeCore
+Success: C:\Program Files (x86)\Microsoft\EdgeCore
+Protective folders created and security settings configured for Edge and EdgeCore.
+
+2025-03-15 16:01:09,701 - INFO - Starting Office Online uninstallation process...
+2025-03-15 16:01:09,702 - INFO - Loading OO uninstall script from: G:\Development\Python\TalonX\components\uninstall_oo.ps1
+2025-03-15 16:01:09,702 - INFO - Executing PowerShell command: Set-ExecutionPolicy Bypass -Scope Process -Force; & 'G:\Development\Python\TalonX\components\uninstall_oo.ps1'
+2025-03-15 16:08:30,568 - INFO - Starting Windows configuration process...
+2025-03-15 16:08:30,568 - INFO - Debloat Target script found: G:\Development\Python\TalonX\components\run_debloat.ps1
+2025-03-15 16:08:30,570 - INFO - Unexpected error during Windows configuration: name 'base_path' is not defined
+2025-03-15 16:08:30,570 - INFO - Attempting to continue with UpdatePolicyChanger despite unexpected error
+2025-03-15 16:08:30,570 - INFO - Starting UpdatePolicyChanger script execution...
+2025-03-15 16:08:30,570 - INFO - Loading UpdatePolicyChanger script from: G:\Development\Python\TalonX\components\update_policy_changer.ps1
+2025-03-15 16:08:30,570 - INFO - Preparing PowerShell command execution...
+2025-03-15 16:08:30,571 - INFO - PowerShell command prepared: Set-ExecutionPolicy Bypass -Scope Process -Force; & "G:\Development\Python\TalonX\components\update_policy_changer.ps1"; exit
+2025-03-15 16:08:30,996 - INFO - PowerShell process completed with return code: 0
+2025-03-15 16:08:30,997 - INFO - Process stdout: Set TargetReleaseVersion to 1 (DWord)
+Set TargetReleaseVersionInfo to 24H2 (String)
+Set ProductVersion to Windows 11 (String)
+Set DeferQualityUpdatesPeriodInDays to 4 (DWord)
+Set DeferQualityUpdates to 1 (DWord)
+
+Registry settings applied successfully.
+
+2025-03-15 16:08:30,999 - INFO - Process stderr: 
+2025-03-15 16:08:30,999 - INFO - UpdatePolicyChanger execution completed successfully
+2025-03-15 16:08:30,999 - INFO - Applying registry changes...
+2025-03-15 16:08:30,999 - INFO - Applied TaskbarAl to Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced
+2025-03-15 16:08:31,000 - INFO - Applied AppsUseLightTheme to Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize
+2025-03-15 16:08:31,000 - INFO - Applied SystemUsesLightTheme to Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize
+2025-03-15 16:08:31,000 - INFO - Applied AppCaptureEnabled to Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR
+2025-03-15 16:08:31,001 - INFO - Applied Value to SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR
+2025-03-15 16:08:31,001 - INFO - Applied MenuShowDelay to Control Panel\\Desktop
+2025-03-15 16:08:31,001 - INFO - Applied MinAnimate to Control Panel\\Desktop\\WindowMetrics
+2025-03-15 16:08:31,001 - INFO - Applied DragFullWindows to Control Panel\\Desktop
+2025-03-15 16:08:31,002 - INFO - Applied ExtendedUIHoverTime to Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced
+2025-03-15 16:08:31,002 - INFO - Applied HideFileExt to Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced
+2025-03-15 16:08:31,002 - INFO - Applied PowerPlan to SYSTEM\\CurrentControlSet\\Control\\Power
+2025-03-15 16:08:31,002 - INFO - Registry changes applied successfully.
+2025-03-15 16:08:31,163 - INFO - Explorer restarted to apply registry changes.
+2025-03-15 16:08:31,163 - INFO - Installation complete. Restarting system...
+2025-03-15 16:08:31,199 - INFO - Wrapping up installation.
+2025-03-15 16:11:01,693 - INFO - Starting Windows configuration process...
+2025-03-15 16:11:01,693 - INFO - Debloat Target script found: G:\Development\Python\TalonX\components\run_debloat.ps1
+2025-03-15 16:11:01,694 - INFO - Unexpected error during Windows configuration: name 'base_path' is not defined
+2025-03-15 16:11:01,694 - INFO - Attempting to continue with UpdatePolicyChanger despite unexpected error
+2025-03-15 16:11:27,617 - INFO - Starting Windows configuration process...
+2025-03-15 16:11:27,617 - INFO - Debloat Target script found: G:\Development\Python\TalonX\components\run_debloat.ps1
+2025-03-15 16:11:28,097 - INFO - Windows configuration failed with return code: 1
+2025-03-15 16:11:28,097 - INFO - Process stderr: G:\Development\Python\TalonX\components\run_debloat.ps1 : Cannot bind parameter because parameter 'ExplorerToThisPC' 
+is specified more than once. To provide multiple values to parameters that can accept multiple values, use the array 
+syntax. For example, "-parameter value1,value2,value3".
+At line:1 char:381
++ ... lUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -Disabl ...
++                                                 ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [run_debloat.ps1], ParameterBindingException
+    + FullyQualifiedErrorId : ParameterAlreadyBound,run_debloat.ps1
+ 
+
+2025-03-15 16:11:28,098 - INFO - Process stdout: 
+2025-03-15 16:11:28,098 - INFO - Attempting to continue with UpdatePolicyChanger despite WinConfig failure
+2025-03-15 16:11:28,098 - INFO - Initiating UpdatePolicyChanger after WinConfig failure...
+2025-03-15 16:12:02,739 - INFO - Starting Windows configuration process...
+2025-03-15 16:12:02,739 - INFO - Debloat Target script found: G:\Development\Python\TalonX\components\run_debloat.ps1
+2025-03-15 16:12:03,451 - INFO - Windows configuration completed successfully
+2025-03-15 16:12:03,451 - INFO - Process stdout: -------------------------------------------------------------------------------------------
+ Win11Debloat Script 
+-------------------------------------------------------------------------------------------
+
+> Running Win11Debloat...
+
+
+2025-03-15 16:12:03,452 - INFO - Preparing to transition to UpdatePolicyChanger...
+2025-03-15 16:12:03,452 - INFO - Initiating UpdatePolicyChanger process...

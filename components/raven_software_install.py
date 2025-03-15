@@ -89,8 +89,8 @@ def install_package(zip_name, install_dir):
     
     package_dir = install_dir / zip_name.replace('.zip', '')
     package_dir.mkdir(parents=True, exist_ok=True)
-
-    zip_path = os.path.join(base_path, ("media" if "compiled" in globals() else "..\\media"), zip_name)
+    
+    zip_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ("media" if "compiled" in globals() else "..\\media"), zip_name)
 
     log(f"Installing {zip_name} from {zip_path}...")
 

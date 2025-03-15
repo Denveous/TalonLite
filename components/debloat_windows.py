@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 """ Set up the log file """
-LOG_FILE = "talon.txt"
+LOG_FILE = "talonx.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,
@@ -45,11 +45,9 @@ if not is_admin():
 def run_edge_vanisher():
     log("Starting Edge Vanisher script execution...")
     try:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, r"components\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
-
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
         log(f"Loading Edge Vanisher script from: {script_path}")
-        
+
         if not os.path.exists(script_path):
             log("Script not found, please ensure it exists in the current directory.")
             return
@@ -87,8 +85,7 @@ def run_edge_vanisher():
 def run_oouninstall():
     log("Starting Office Online uninstallation process...")
     try:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, r"components\uninstall_oo.ps1" if "__compiled__" in globals() else "uninstall_oo.ps1")
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\uninstall_oo.ps1" if "__compiled__" in globals() else "uninstall_oo.ps1")
 
         log(f"Loading OO uninstall script from: {script_path}")
         
@@ -203,9 +200,8 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
-        log(f"Debloat Target script path: {script_path}")
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        log(f"Debloat Target script found: {script_path}")
         process = subprocess.run(
             [
                 "powershell", 
@@ -214,8 +210,8 @@ def run_winconfig():
                 f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
                 f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
                 f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
-                f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC "
-                f"-DisableMouseAcceleration -ScriptPath '{os.path.join(base_path, 'components')}'"
+                f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended "
+                f"-DisableMouseAcceleration -ScriptPath '{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}'"
             ],
             capture_output=True,
             text=True
