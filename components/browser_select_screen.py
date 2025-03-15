@@ -8,7 +8,7 @@ import sys
 import logging
 
 """ Set up the log file """
-LOG_FILE = "talonx.txt"
+LOG_FILE = "TalonX.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,

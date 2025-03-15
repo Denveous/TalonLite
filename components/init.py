@@ -19,10 +19,10 @@ import platform
 import winreg
 
 """ Establish the version of TalonX """
-TALONX_VERSION = "1.1.4 (customoffline)"
+TALONX_VERSION = "0.1 (1.1.4 Talon Base)"
 
 """ Set up the log file """
-LOG_FILE = "talonx.txt"
+LOG_FILE = "TalonX.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.DEBUG,

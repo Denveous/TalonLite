@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 """ Set up the log file """
-LOG_FILE = "talonx.txt"
+LOG_FILE = "TalonX.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,
@@ -172,153 +172,110 @@ def run_tweaks():
                         creationflags=subprocess.CREATE_NO_WINDOW
                     )
                     run_winconfig()
-                    os._exit(0)
+                    sys.exit(0)
 
             if time.time() - last_output_time > timeout_duration:
                 log("No output received from winutil for 60 seconds, moving on to debloat...")
                 process.terminate()
                 run_winconfig()
-                os._exit(1)
+                sys.exit(0)
 
             if process.poll() is not None:
                 run_winconfig()
-                os._exit(1)
+                sys.exit(0)
 
         return False
 
     except Exception as e:
         log(f"Error: {str(e)}")
         run_winconfig()
-        os._exit(1)
+        sys.exit(0)
 
 """ Run Raphi's Win11Debloat script to further debloat the system (Thanks Raphire! Source: https://win11debloat.raphi.re/Win11Debloat.ps1) """
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        #script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
-        script_path = "run_debloat.ps1" if "__compiled__" in globals() else os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1")
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        log(f"Loading Debloat script from: {script_path}")
 
-        log(f"Debloat Target script found: {script_path}")
+        if os.access(script_path, os.R_OK):
+            log(f"Script {script_path} is readable.")
+        else:
+            log(f"Script {script_path} is not readable.")
+
+        if not os.path.exists(script_path):
+            log("Script not found, please ensure it exists in the current directory.")
+            return
+        
+        powershell_command = (
+            f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
+            f"& '{script_path}'-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
+            f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
+            f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
+            f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ScriptPath \"{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}\"; exit" 
+        )
+        log(f"Executing PowerShell command: {powershell_command}")
+        
         process = subprocess.run(
-            [
-                "powershell", 
-                "-Command", 
-                f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-                f"& \"{script_path}\" -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
-                f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
-                f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
-                f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended "
-                f"-DisableMouseAcceleration -ScriptPath \"{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}\""
-            ],
+            ["powershell", "-Command", powershell_command],
             capture_output=True,
             text=True
         )
-
+        
         if process.returncode == 0:
             log("Windows configuration completed successfully")
             log(f"Process stdout: {process.stdout}")
             log("Preparing to transition to UpdatePolicyChanger...")
             try:
-                log("Initiating UpdatePolicyChanger process...")
-                run_updatepolicychanger()
+                log("Initiating registry changes...")
+                apply_registry_changes()
             except Exception as e:
-                log(f"Failed to start UpdatePolicyChanger: {e}")
+                log(f"Failed to run registry changes: {e}")
                 log("Attempting to continue with installation despite UpdatePolicyChanger failure")
-                run_updatepolicychanger()
+                apply_registry_changes()
         else:
-            log(f"Windows configuration failed with return code: {process.returncode}")
+            log(f"Windows debloat failed with return code: {process.returncode}")
             log(f"Process stderr: {process.stderr}")
             log(f"Process stdout: {process.stdout}")
-            log("Attempting to continue with UpdatePolicyChanger despite WinConfig failure")
+            log("Attempting to continue with registry changes despite WinConfig failure")
             try:
-                log("Initiating UpdatePolicyChanger after WinConfig failure...")
-                run_updatepolicychanger()
+                log("Initiating registry changes after WinConfig failure...")
+                apply_registry_changes()
             except Exception as e:
-                log(f"Failed to start UpdatePolicyChanger after WinConfig failure: {e}")
+                log(f"Failed to run registry changes after WinConfig failure: {e}")
                 log("Proceeding to finalize installation...")
-                run_updatepolicychanger()
+                apply_registry_changes()
             
-    except requests.exceptions.RequestException as e:
-        log(f"Network error during Windows configuration script download: {str(e)}")
-        log("Attempting to continue with UpdatePolicyChanger despite network error")
-        try:
-            run_updatepolicychanger()
-        except Exception as inner_e:
-            log(f"Failed to start UpdatePolicyChanger after network error: {inner_e}")
-            run_updatepolicychanger()
-    except IOError as e:
-        log(f"File I/O error while saving Windows configuration script: {str(e)}")
-        log("Attempting to continue with UpdatePolicyChanger despite I/O error")
-        try:
-            run_updatepolicychanger()
-        except Exception as inner_e:
-            log(f"Failed to start UpdatePolicyChanger after I/O error: {inner_e}")
-            run_updatepolicychanger()
     except Exception as e:
         log(f"Unexpected error during Windows configuration: {str(e)}")
-        log("Attempting to continue with UpdatePolicyChanger despite unexpected error")
+        log("Attempting to continue with registry changes despite unexpected error")
         try:
-            run_updatepolicychanger()
+            apply_registry_changes()
         except Exception as inner_e:
-            log(f"Failed to start UpdatePolicyChanger after unexpected error: {inner_e}")
-            run_updatepolicychanger()
-
-
-""" Run a script to establish an update policy which only accepts security updates """
-def run_updatepolicychanger():
-    log("Starting UpdatePolicyChanger script execution...")
-    try:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(base_path, r"components\update_policy_changer.ps1" if "__compiled__" in globals() else "update_policy_changer.ps1")
-        log(f"Loading UpdatePolicyChanger script from: {script_path}")
-        log("Preparing PowerShell command execution...")
-        powershell_command = f"Set-ExecutionPolicy Bypass -Scope Process -Force; & \"{script_path}\"; exit"
-        log(f"PowerShell command prepared: {powershell_command}")
-        process = subprocess.run(
-            ["powershell", "-Command", powershell_command],
-            capture_output=True,
-            text=True,
-            timeout=300  # Increase timeout if necessary
-        )
-        log(f"PowerShell process completed with return code: {process.returncode}")
-        log(f"Process stdout: {process.stdout}")
-        log(f"Process stderr: {process.stderr}")
-        
-        if process.returncode == 0:
-            log("UpdatePolicyChanger execution completed successfully")
+            log(f"Failed to run registry changes after unexpected error: {inner_e}")
             apply_registry_changes()
-        else:
-            log(f"UpdatePolicyChanger execution failed with return code: {process.returncode}")
-            apply_registry_changes()
-            
-    except Exception as e:
-        log(f"Critical error in UpdatePolicyChanger: {e}")
-        apply_registry_changes()
-
-    except Exception as e:
-        log(f"Critical error in UpdatePolicyChanger: {e}")
-        log("Proceeding to registry changes due to critical error...")
-        apply_registry_changes()
 
 """ Apply modifications done via the Windows registry """
 def apply_registry_changes():
     log("Applying registry changes...")
     try:
         registry_modifications = [
-            # Visual changes
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 1), # Align taskbar to the center
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", winreg.REG_DWORD, 0), # Set Windows apps to dark theme
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "SystemUsesLightTheme", winreg.REG_DWORD, 0), # Set Windows to dark theme
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0), #Fix the  Get an app for 'ms-gamingoverlay' popup
-            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR", "Value", winreg.REG_DWORD, 0), # Disable Game DVR (Reduces FPS Drops)
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "MenuShowDelay", winreg.REG_SZ, "0"),# Reduce menu delay for snappier UI
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 0),# Disable minimize/maximize animations
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging 
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),# Reduce hover time for tooltips and UI elements
-            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),# Show file extensions in Explorer (useful for security and organization)
-            
-            # Other Changes
-            (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\\CurrentControlSet\\Control\\Power", "PowerPlan", winreg.REG_SZ, "8c5e7fda-3b9c-4c3b-8c3b-3b3c3b3c3b3c")  # Set power plan to High Performance
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "TaskbarAl", winreg.REG_DWORD, 1),  # Align taskbar to the center
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", winreg.REG_DWORD, 0),  # Set Windows apps to dark theme
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "SystemUsesLightTheme", winreg.REG_DWORD, 0),  # Set Windows to dark theme
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0),  # Fix the Get an app for 'ms-gamingoverlay' popup
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR", "Value", winreg.REG_DWORD, 0),  # Disable Game DVR (Reduces FPS Drops)
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "MenuShowDelay", winreg.REG_SZ, "0"),  # Reduce menu delay for snappier UI
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 0),  # Disable minimize/maximize animations
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),  # Reduce hover time for tooltips and UI elements
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),  # Show file extensions in Explorer (useful for security and organization)
+            (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\\CurrentControlSet\\Control\\Power", "PowerPlan", winreg.REG_SZ, "8c5e7fda-3b9c-4c3b-8c3b-3b3c3b3c3b3c"),  # Set power plan to High Performance
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "DeferQualityUpdates", winreg.REG_DWORD, 1),  # Defer quality updates
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "DeferQualityUpdatesPeriodInDays", winreg.REG_DWORD, 4),  # Defer quality updates period in days
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "ProductVersion", winreg.REG_SZ, "Windows 11"),  # Set product version
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersion", winreg.REG_DWORD, 1),  # Set target release version
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersionInfo", winreg.REG_SZ, "24H2")  # Set target release version info
         ]
         for root_key, key_path, value_name, value_type, value in registry_modifications:
             try:
@@ -327,6 +284,7 @@ def apply_registry_changes():
                     log(f"Applied {value_name} to {key_path}")
             except Exception as e:
                 log(f"Failed to modify {value_name} in {key_path}: {e}")
+        
         log("Registry changes applied successfully.")
         subprocess.run(["taskkill", "/F", "/IM", "explorer.exe"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["start", "explorer.exe"], shell=True)

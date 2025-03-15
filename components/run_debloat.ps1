@@ -99,4 +99,4 @@ if ($null -ne $debloatProcess) {
     $debloatProcess.WaitForExit()
 }
 
-Write-Output ""
+Write-Output "Finished Win11Debloat"
