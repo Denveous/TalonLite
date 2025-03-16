@@ -36,17 +36,19 @@ def show_popup(title, message, is_error=False, delay_ok=False, exit_on_error=Fal
 def check_system():
     if not is_windows_11():
         show_popup(
-            "TalonX Installation Failure",
-            "You are currently on Windows 10 or older. <b>TalonX is designed to only work on freshly installed Windows 11 systems</b>. Please update to a fresh installation of Windows 11 before attempting to use Talon again.",
+            "TalonLite Installation Failure",
+            "You are currently on Windows 10 or older. <b>TalonLite is designed to only work on freshly installed Windows 11 systems</b>. Please update to a fresh installation of Windows 11 before attempting to use Talon again.",
             is_error=True,
             exit_on_error=True
         )
     show_popup(
-        "TalonX Installation Warning",
+        "TalonLite Installation Warning",
         """
-        TalonX is designed to be used on <b>freshly installed Windows 11 systems</b>. Running this program on an already in-use system could result in data loss, apps stopping working, or even corruption.<br><br>
+        TalonLite is designed to be used on <b>freshly installed Windows 11 systems</b>. Running this program on an already in-use system could result in data loss, apps stopping working, or even corruption.<br><br>
         
-        <b>For the best results, please ensure you are on a fresh installation of the latest version of Windows 11 Home or Professional.</b>
+        <b>For the best results, please ensure you are on a fresh installation of the latest version of Windows 11 Home or Professional.</b><br><br>
+        
+        <b><i><font color=tomato>Make sure you have another browser besides Edge as it will be removed during this process.</font></i></b>
         """,
         is_error=False,
         delay_ok=True

@@ -6,11 +6,9 @@ import subprocess
 import threading
 import logging
 from PyQt5.QtWidgets import QApplication
-from browser_select_screen import BrowserSelectScreen
 from defender_check import DefenderCheck
 from install_screen import InstallScreen
 import debloat_windows
-import browser_install
 import windows_check
 import apply_background
 import time
@@ -18,11 +16,11 @@ from PyQt5.QtCore import QTimer
 import platform
 import winreg
 
-""" Establish the version of TalonX """
-TALONX_VERSION = "0.1 (1.1.4 Talon Base)"
+""" Establish the version of TalonLite """
+TALONLITE_VERSION = "0.1 (1.1.4 Talon Base)"
 
 """ Set up the log file """
-LOG_FILE = "TalonX.txt"
+LOG_FILE = "TalonLite.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.DEBUG,
@@ -69,10 +67,10 @@ def restart_as_admin():
     except Exception as e:
         logging.error(f"Error restarting as admin: {e}")
 
-""" Main function to begin TalonX installation """
+""" Main function to begin TalonLite installation """
 def main():
-    logging.info("Starting TalonX Installer")
-    logging.info(f"TalonX Version: {TALONX_VERSION}")
+    logging.info("Starting TalonLite Installer")
+    logging.info(f"TalonLite Version: {TALONLITE_VERSION}")
     windows_info = get_windows_info()
     if windows_info:
         logging.info(f"Windows Version: {windows_info['product_name']}")
@@ -92,31 +90,12 @@ def main():
         logging.info("Defender is disabled, proceeding with the rest of the program.")
     except Exception as e:
         logging.error(f"Error during Defender check: {e}")
-    selected_browser = None
     try:
         logging.info("Running Windows 11 and fresh install check...")
         windows_check.check_system()
         logging.info("System check passed.")
     except Exception as e:
         logging.error(f"System check failed: {e}")
-    try:
-        logging.info("Displaying browser selection screen...")
-        browser_select_screen = BrowserSelectScreen()
-        browser_select_screen.show()
-        while selected_browser is None:
-            app.processEvents()
-            if browser_select_screen.selected_browser is not None:
-                selected_browser = browser_select_screen.selected_browser
-        logging.info(f"Browser Selected: {selected_browser}")
-        browser_select_screen.close()
-
-        if selected_browser == 'skip':
-            logging.info("Browser installation skipped.")
-        else:
-            logging.info(f"Proceeding with installation of {selected_browser} browser...")
-    except Exception as e:
-        logging.error(f"Error during browser selection: {e}")
-
     try:
         logging.info("Displaying installation screen...")
         install_screen = InstallScreen()
@@ -126,14 +105,6 @@ def main():
 
     """ Run the installation process """
     def perform_installation():
-        if selected_browser != 'skip':
-            try:
-                logging.info(f"Installing {selected_browser} browser...")
-                browser_install.install_browser(selected_browser)
-                logging.info(f"{selected_browser} browser installation complete.")
-            except Exception as e:
-                logging.error(f"Error during browser installation: {e}")
-        
         try:
             logging.info("Applying background settings...")
             apply_background.main()

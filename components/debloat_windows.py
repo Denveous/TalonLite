@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 """ Set up the log file """
-LOG_FILE = "TalonX.txt"
+LOG_FILE = "TalonLite.txt"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,
@@ -156,9 +156,12 @@ def run_tweaks():
 
         last_output_time = time.time()
         timeout_duration = 60
-
-        while True:
+        tweakFinished = False
+        while not tweakFinished:
             output = process.stdout.readline()
+            if tweakFinished:
+                return
+
             if output:
                 output = output.strip()
                 log(f"CTT Output: {output}")
@@ -166,26 +169,35 @@ def run_tweaks():
 
                 if "Tweaks are Finished" in output:
                     log("Detected completion message. Terminating...")
-                    subprocess.run(
-                        ["powershell", "-Command", "Stop-Process -Name powershell -Force"],
-                        capture_output=True,
-                        creationflags=subprocess.CREATE_NO_WINDOW
-                    )
+                    #subprocess.run(
+                    #    ["powershell", "-Command", "Stop-Process -Name powershell -Force"],
+                    #    capture_output=True,
+                    #    creationflags=subprocess.CREATE_NO_WINDOW
+                    #)
+                    process.terminate()
                     run_winconfig()
+                    tweakFinished = True
+                    sys.exit(1)
 
             if time.time() - last_output_time > timeout_duration:
                 log("No output received from winutil for 60 seconds, moving on to debloat...")
                 process.terminate()
+                tweakFinished = True
                 run_winconfig()
+                sys.exit(1)
 
             if process.poll() is not None:
+                tweakFinished = True
                 run_winconfig()
+                sys.exit(1)
 
         return False
 
     except Exception as e:
         log(f"Error: {str(e)}")
+        tweakFinished = True
         run_winconfig()
+        sys.exit(1)
 
 """ Run Raphi's Win11Debloat script to further debloat the system (Thanks Raphire! Source: https://win11debloat.raphi.re/Win11Debloat.ps1) """
 def run_winconfig():
@@ -193,31 +205,23 @@ def run_winconfig():
     try:
         script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
         log(f"Loading Debloat script from: {script_path}")
-
-        if os.access(script_path, os.R_OK):
-            log(f"Script {script_path} is readable.")
-        else:
-            log(f"Script {script_path} is not readable.")
-
-        if not os.path.exists(script_path):
-            log("Script not found, please ensure it exists in the current directory.")
-            return
-        
         powershell_command = (
             f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-            f"& '{script_path}'-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
+            f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
             f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
             f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
             f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ScriptPath \"{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}\"; exit" 
         )
         log(f"Executing PowerShell command: {powershell_command}")
-        
-        process = subprocess.run(
-            ["powershell", "-Command", powershell_command],
-            capture_output=True,
-            text=True
+        process = subprocess.Popen(
+            powershell_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
-        
         if process.returncode == 0:
             log("Windows configuration completed successfully")
             log(f"Process stdout: {process.stdout}")

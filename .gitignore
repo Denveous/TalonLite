@@ -5,7 +5,7 @@
 *.pyc
 .DS_Store
 *nuitka-crash-*.xml*
-**/TalonX.txt
-TalonX.txt
+**/TalonLite.txt
+TalonLite.txt
 **/__pycache__/
 __pycache__/

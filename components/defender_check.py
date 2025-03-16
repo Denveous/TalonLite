@@ -17,13 +17,13 @@ class DefenderCheck(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.load_chakra_petch_font()
-        self.setWindowTitle("Raven TalonX")
+        self.setWindowTitle("Raven TalonLite")
         self.setFixedSize(600, 200)
         self.setStyleSheet("background-color: black; color: white;")
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
 
-        self.message_label = QLabel("Windows Defender is currently enabled, which causes TalonX to not work properly.\n\nPlease disable Windows Defender. TalonX will automatically proceed afterwards.")
+        self.message_label = QLabel("Windows Defender is currently enabled, which causes TalonLite to not work properly.\n\nPlease disable Windows Defender. TalonLite will automatically proceed afterwards.")
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: white; font-size: 18px; padding: 12px; line-height: 1.5;")
         self.message_label.setFont(QFont("Chakra Petch", 16))

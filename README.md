@@ -1,19 +1,19 @@
-# TalonX 
+# TalonLite 
 
 > **This is a fork of the Talon (v1.1.4) debloat tool made by the [Raven Development Team](https://ravendevteam.org/)**
 
-> **This version is modified to run __mostly__ (check note below) without an internet connection and includes some minor tweaks to the original code.** 
+> **This version is modified to run completely without an internet connection and includes some minor tweaks to the original code.** 
 
-> **To install a web browser a internet connection is still required, but an option to skip this was added if you already have a replacement for Microsoft Edge**
+> **Make sure to install a web browser other than Microsoft Edge as it will be removed in the process.**
 
-**TalonX** is a simple utility to debloat Windows in just a few clicks. 🖱️
+**TalonLite** is a simple utility to debloat Windows in just a few clicks. 🖱️
 
 ## Changes 🔄
 
-- **Added:** Option to skip browser selection. 🆕
 - **Added:** Close button to the Defender check screen. ❌
 - **Added:** Credit for the original background creator to the contributors list. 🙌
-- **Added:** TalonX now selects the _High Performance_ power profile. ⚡
+- **Added:** TalonLite now selects the _High Performance_ power profile. ⚡
+- **Removed:** Browser selection screen. 🆕
 - **Removed:** Watermarking from the background (only for the sake of minimalism; credits to RecklessThor4). ✂️
 - **Removed:** "Extra" apps & selection screen made by **[Raven Development Team](https://ravendevteam.org/)**. ✂️
 - **Modified:** Base code to run without an internet connection. 🌐
@@ -21,11 +21,11 @@
 ## Usage Instructions 📋
 
 > **Caution:**  
-> ⚠️ TalonX is designed to be used on **freshly installed Windows 11 systems**. Using TalonX on an already in-use system or any older versions of Windows is not guaranteed to work and may cause some apps to stop functioning properly or lead to system corruption! ⚠️
+> ⚠️ TalonLite is designed to be used on **freshly installed Windows 11 systems**. Using TalonLite on an already in-use system or any older versions of Windows is not guaranteed to work and may cause some apps to stop functioning properly or lead to system corruption! ⚠️
 
-1. **Download** the latest version from the [Releases](https://github.com/Denveous/TalonX/releases/tag/Windows) page. 📥
+1. **Download** the latest version from the [Releases](https://github.com/Denveous/TalonLite/releases/tag/Windows) page. 📥
 2. **Temporarily** disable **Windows Defender** 🛡️.
-3. **Run** `TalonX.exe`. 🖥️
+3. **Run** `TalonLite.exe`. 🖥️
 4. **Follow** the on-screen prompts to debloat your Windows system. 🛠️
 5. **Enjoy** a cleaner, faster Windows experience! 🎉
 
@@ -50,7 +50,7 @@ To compile from source, ensure you have Python 🐍 3.12.4 or greater and Nuitka
 
 ## Support 🤝
 
-If you encounter any issues or have questions, feel free to open an [issue](https://github.com/Denveous/TalonX/issues) ticket. __(I only have limited free time to offer support for this.)__ 💬
+If you encounter any issues or have questions, feel free to open an [issue](https://github.com/Denveous/TalonLite/issues) ticket. __(I only have limited free time to offer support for this.)__ 💬
 
 ## License 📜
 
