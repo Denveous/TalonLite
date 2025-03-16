@@ -1,4 +1,3 @@
-""" Import necessary modules for the program to work """
 import ctypes
 import time
 import threading

@@ -29,6 +29,22 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+""" Attempt to temporarily Disable Windows Defender """
+def disable_windows_defender():
+    try:
+        subprocess.run(["powershell", "-Command", "Set-MpPreference -DisableRealtimeMonitoring $true"], check=True)
+        print("Windows Defender has been disabled.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
+""" Attempt to enable Windows Defender """
+def enable_windows_defender():
+    try:
+        subprocess.run(["powershell", "-Command", "Set-MpPreference -DisableRealtimeMonitoring $false"], check=True)
+        print("Windows Defender has been enabled.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
 """ Utility function to obtain information about Windows """
 def get_windows_info():
     try:
@@ -92,6 +108,11 @@ def main():
         logging.warning("Program is not running as admin. Restarting with admin rights...")
         restart_as_admin()
     try:
+        loggin.info("Attempting to disable windows defender temporarily...")
+        disable_windows_defender()
+    except Exception as e:
+        logging.error(f"Error disabling defender: {e}")
+    try:
         loggin.info("Cleaning up previous temp files...")
         clean_nuitka_temp_folders()
     except Exception as e:
@@ -139,7 +160,11 @@ def main():
         install_screen.close()
         logging.info("Installation complete. Restarting system...")
         debloat_windows.finalize_installation()
-
+        try:
+            loggin.info("Attempting to disable windows defender temporarily...")
+            enable_windows_defender()
+        except Exception as e:
+            logging.error(f"Error disabling defender: {e}")
     try:
         logging.info("Starting installation process in a separate thread...")
         install_thread = threading.Thread(target=perform_installation)
