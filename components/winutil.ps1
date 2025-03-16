@@ -69,8 +69,11 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     $script = if ($PSCommandPath) {
         "& { & `'$($PSCommandPath)`' $($argList -join ' ') }"
     } else {
-        "&([ScriptBlock]::Create((irm https://github.com/ChrisTitusTech/winutil/releases/latest/download/winutil.ps1))) $($argList -join ' ')"
+        $scriptDirectory = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+        $localScriptPath = Join-Path -Path $scriptDirectory -ChildPath "winutil.ps1"
+        "& { & `'winutil.ps1`' $($argList -join ' ') }"
     }
+
 
     $powershellCmd = if (Get-Command pwsh -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell" }
     $processCmd = if (Get-Command wt.exe -ErrorAction SilentlyContinue) { "wt.exe" } else { "$powershellCmd" }

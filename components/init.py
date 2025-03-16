@@ -15,9 +15,11 @@ import time
 from PyQt5.QtCore import QTimer
 import platform
 import winreg
+import tempfile
+import shutil
 
 """ Establish the version of TalonLite """
-TALONLITE_VERSION = "0.1 (1.1.4 Talon Base)"
+TALONLITE_VERSION = "0.2.2 (1.1.4 Talon Base)"
 
 """ Set up the log file """
 LOG_FILE = "TalonLite.txt"
@@ -67,6 +69,15 @@ def restart_as_admin():
     except Exception as e:
         logging.error(f"Error restarting as admin: {e}")
 
+""" Cleanup old Nuitka folders """
+def clean_nuitka_temp_folders():
+    temp_directory = tempfile.gettempdir()
+    for item in os.listdir(temp_directory):  # Corrected indentation
+        item_path = os.path.join(temp_directory, item)
+        if os.path.isdir(item_path) and item.lower().startswith('onefile_'):
+            print(f"Removing nuitka folder: {item_path}")
+            shutil.rmtree(item_path)
+
 """ Main function to begin TalonLite installation """
 def main():
     logging.info("Starting TalonLite Installer")
@@ -80,6 +91,11 @@ def main():
     if not is_running_as_admin():
         logging.warning("Program is not running as admin. Restarting with admin rights...")
         restart_as_admin()
+    try:
+        loggin.info("Cleaning up previous temp files...")
+        clean_nuitka_temp_folders()
+    except Exception as e:
+        logging.error(f"Error during clean up: {e}")
     try:
         logging.info("Starting Defender check...")
         defender_check_window = DefenderCheck()

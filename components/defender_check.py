@@ -33,13 +33,17 @@ class DefenderCheck(QWidget):
 
         self.close_button = QPushButton("Close")
         self.close_button.setStyleSheet("font-size: 16px; padding: 10px;")
-        self.close_button.clicked.connect(self.close)  # Connect button click to close method
+        self.close_button.clicked.connect(self.close) 
         layout.addWidget(self.close_button)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.check_defender_status)
         self.check_defender_status(immediate_check=True)
         self.setLayout(layout)
+
+        self.auto_close_timer = QTimer(self)
+        self.auto_close_timer.setSingleShot(True)
+        self.auto_close_timer.timeout.connect(self.close)
 
     """ Load the Chakra Petch font, which is used for the UI """
     def load_chakra_petch_font(self):
@@ -58,9 +62,10 @@ class DefenderCheck(QWidget):
     def check_defender_status(self, immediate_check=False):
         if immediate_check:
             if not self.is_defender_enabled():
-                self.message_label.setText("Windows Defender has been disabled. Close this window to proceed.")
+                self.message_label.setText("Windows Defender has been disabled. Closing this window in 10 seconds...")
                 print("Success: Defender disabled (initial check)")
                 self.defender_disabled_signal.emit()
+                self.auto_close_timer.start(3000) 
             else:
                 self.message_label.setText("Windows Defender is enabled. Waiting 3 seconds before rechecking...")
                 self.timer.start(3000)
@@ -72,6 +77,7 @@ class DefenderCheck(QWidget):
                 self.timer.stop()
                 print("Success: Defender disabled (after periodic check)")
                 self.defender_disabled_signal.emit()
+                self.auto_close_timer.start(3000)  
             else:
                 print("Defender is still enabled. Checking again in 3 seconds...")
 

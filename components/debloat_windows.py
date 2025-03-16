@@ -169,15 +169,10 @@ def run_tweaks():
 
                 if "Tweaks are Finished" in output:
                     log("Detected completion message. Terminating...")
-                    #subprocess.run(
-                    #    ["powershell", "-Command", "Stop-Process -Name powershell -Force"],
-                    #    capture_output=True,
-                    #    creationflags=subprocess.CREATE_NO_WINDOW
-                    #)
                     process.terminate()
                     run_winconfig()
                     tweakFinished = True
-                    sys.exit(1)
+                    sys.exit(0)
 
             if time.time() - last_output_time > timeout_duration:
                 log("No output received from winutil for 60 seconds, moving on to debloat...")
@@ -203,48 +198,42 @@ def run_tweaks():
 def run_winconfig():
     log("Starting Windows configuration process...")
     try:
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\run_debloat.ps1" if "__compiled__" in globals() else "run_debloat.ps1")
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\Win11Debloat\Win11Debloat.ps1" if "__compiled__" in globals() else r"Win11Debloat\Win11Debloat.ps1")
         log(f"Loading Debloat script from: {script_path}")
-        powershell_command = (
-            f"Set-ExecutionPolicy Bypass -Scope Process -Force; "
-            f"& '{script_path}' -Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
-            f"-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
-            f"-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
-            f"-ClearStartAllUsers -DisableDVR -DisableStartRecommended -ScriptPath \"{os.path.join(os.path.dirname(os.path.abspath(__file__)), 'components')}\"; exit" 
+        arguments = (
+            "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry "
+            "-DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu "
+            "-TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ExplorerToThisPC "
+            "-ClearStartAllUsers -DisableDVR -DisableStartRecommended; exit"
         )
-        log(f"Executing PowerShell command: {powershell_command}")
-        process = subprocess.Popen(
-            powershell_command,
+        command = (
+            f"powershell.exe -ExecutionPolicy Bypass -Command \"& {{Set-ExecutionPolicy Bypass -Scope Process -Force; . '{script_path}' {arguments}}}\""
+        )
+        log(f"Executing PowerShell command: {command}")  
+        windebloatprocess = subprocess.Popen(
+            command,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            encoding='utf-8',
-            errors='replace',
-            creationflags=subprocess.CREATE_NO_WINDOW
+            shell=True  
         )
-        if process.returncode == 0:
+        stdout, stderr = windebloatprocess.communicate()
+        if windebloatprocess.returncode == 0:
             log("Windows configuration completed successfully")
-            log(f"Process stdout: {process.stdout}")
-            log("Preparing to transition to UpdatePolicyChanger...")
-            try:
-                log("Initiating registry changes...")
-                apply_registry_changes()
-            except Exception as e:
-                log(f"Failed to run registry changes: {e}")
-                log("Attempting to continue with installation despite UpdatePolicyChanger failure")
-                apply_registry_changes()
+            log(f"Process stdout: {stdout}")
         else:
-            log(f"Windows debloat failed with return code: {process.returncode}")
-            log(f"Process stderr: {process.stderr}")
-            log(f"Process stdout: {process.stdout}")
-            log("Attempting to continue with registry changes despite WinConfig failure")
-            try:
-                log("Initiating registry changes after WinConfig failure...")
-                apply_registry_changes()
-            except Exception as e:
-                log(f"Failed to run registry changes after WinConfig failure: {e}")
-                log("Proceeding to finalize installation...")
-                apply_registry_changes()
+            log(f"Windows debloat failed with return code: {windebloatprocess.returncode}")
+            log(f"Process stderr: {stderr}")
+            log(f"Process stdout: {stdout}")
+        
+        log("Preparing to transition to registry changes...")
+        try:
+            log("Initiating registry changes...")
+            apply_registry_changes()
+        except Exception as e:
+            log(f"Failed to run registry changes: {e}")
+            log("Attempting to continue with installation despite registry changes failure")
+            apply_registry_changes()
             
     except Exception as e:
         log(f"Unexpected error during Windows configuration: {str(e)}")
@@ -310,4 +299,4 @@ def finalize_installation():
 
 """ Run the program """
 if __name__ == "__main__":
-    run_edge_vanisher()
+    run_winconfig()

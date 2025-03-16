@@ -18,11 +18,7 @@ def show_popup(title, message, is_error=False, delay_ok=False, exit_on_error=Fal
     msg_box = QMessageBox()
     msg_box.setWindowTitle(title)
     msg_box.setTextFormat(Qt.RichText)
-    msg_box.setText(f"<span style='font-size:12pt;'>{message}</span>")
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    icon_path = os.path.join(base_path, "media\\ICON.ico")
-    icon_pixmap = QPixmap(icon_path)  
-    msg_box.setIconPixmap(icon_pixmap)  
+    msg_box.setText(f"<span style='font-size:12pt;'>{message}</span>") 
     msg_box.setIcon(QMessageBox.Critical if is_error else QMessageBox.Warning)
     ok_button = msg_box.addButton(QMessageBox.Ok)
     if delay_ok:

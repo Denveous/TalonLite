@@ -2,7 +2,7 @@
 
 > **This is a fork of the Talon (v1.1.4) debloat tool made by the [Raven Development Team](https://ravendevteam.org/)**
 
-> **This version is modified to run completely without an internet connection and includes some minor tweaks to the original code.** 
+> **This version is modified to run *__mostly__* without an internet connection and includes some minor tweaks to the original code.** 
 
 > **Make sure to install a web browser other than Microsoft Edge as it will be removed in the process.**
 
@@ -10,12 +10,10 @@
 
 ## Changes 🔄
 
-- **Added:** Close button to the Defender check screen. ❌
-- **Added:** Credit for the original background creator to the contributors list. 🙌
+- **Added:** Credit for the original background creator to the contributors list down below. 🙌
 - **Added:** TalonLite now selects the _High Performance_ power profile. ⚡
 - **Removed:** Watermarking from the background (only for the sake of minimalism; credits to RecklessThor4). ✂️
 - **Removed:** "Extra" apps & browser selection screen made by **[Raven Development Team](https://ravendevteam.org/)**. ✂️
-- **Modified:** Base code to run without an internet connection. 🌐
 
 ## Usage Instructions 📋
 
@@ -23,10 +21,8 @@
 > ⚠️ TalonLite is designed to be used on **freshly installed Windows 11 systems**. Using TalonLite on an already in-use system or any older versions of Windows is not guaranteed to work and may cause some apps to stop functioning properly or lead to system corruption! ⚠️
 
 1. **Download** the latest version from [here](https://github.com/Denveous/TalonLite/releases/download/Windows/TalonLite.exe). 📥
-2. **Temporarily** disable **Windows Defender** 🛡️.
+2. **Temporarily** disable **Windows Defender** 🛡️. __(It should come back on as soon as your system reboots, double check that it does.)__
 3. **Run** `TalonLite.exe`. 🖥️
-4. **Follow** the on-screen prompts to debloat your Windows system. 🛠️
-5. **Enjoy** a cleaner, faster Windows experience! 🎉
 
 ## Compilation Instructions ⚙️
 
