@@ -22,7 +22,7 @@
 > **Caution:**  
 > ⚠️ TalonLite is designed to be used on **freshly installed Windows 11 systems**. Using TalonLite on an already in-use system or any older versions of Windows is not guaranteed to work and may cause some apps to stop functioning properly or lead to system corruption! ⚠️
 
-1. **Download** the latest version from the [Releases](https://github.com/Denveous/TalonLite/releases/tag/Windows) page. 📥
+1. **Download** the latest version from [here](https://github.com/Denveous/TalonLite/releases/download/Windows/TalonLite.exe). 📥
 2. **Temporarily** disable **Windows Defender** 🛡️.
 3. **Run** `TalonLite.exe`. 🖥️
 4. **Follow** the on-screen prompts to debloat your Windows system. 🛠️
