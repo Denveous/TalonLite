@@ -13,9 +13,8 @@
 - **Added:** Close button to the Defender check screen. ❌
 - **Added:** Credit for the original background creator to the contributors list. 🙌
 - **Added:** TalonLite now selects the _High Performance_ power profile. ⚡
-- **Removed:** Browser selection screen. 🆕
 - **Removed:** Watermarking from the background (only for the sake of minimalism; credits to RecklessThor4). ✂️
-- **Removed:** "Extra" apps & selection screen made by **[Raven Development Team](https://ravendevteam.org/)**. ✂️
+- **Removed:** "Extra" apps & browser selection screen made by **[Raven Development Team](https://ravendevteam.org/)**. ✂️
 - **Modified:** Base code to run without an internet connection. 🌐
 
 ## Usage Instructions 📋
