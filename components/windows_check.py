@@ -45,8 +45,6 @@ def check_system():
         <b>For the best results, please ensure you are on a fresh installation of the latest version of Windows 11 Home or Professional.</b><br><br>
         
         <b><i><font color=crimson>Make sure you have another browser besides Edge as it will be removed during this process.</font></i></b>
-
-        <b><i>Also sure you have everything saved if you have any processes open it'll be closed once this begins.</font></i></b>
         """,
         is_error=False,
         delay_ok=True

@@ -43,6 +43,7 @@ if not is_admin():
 
 """ Run a script to remove Edge, and prevent reinstallation """
 def run_edge_vanisher():
+    return
     log("Starting Edge Vanisher script execution...")
     try:
         script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"components\edge_vanisher.ps1" if "__compiled__" in globals() else "edge_vanisher.ps1")
@@ -246,7 +247,6 @@ def run_winconfig():
 
 """ Apply modifications done via the Windows registry """
 def apply_registry_changes():
-    return
     log("Applying registry changes...")
     try:
         registry_modifications = [
@@ -267,9 +267,7 @@ def apply_registry_changes():
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersion", winreg.REG_DWORD, 1),  # Set target release version
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersionInfo", winreg.REG_SZ, "24H2"),  # Set target release version info
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows\\Dwm", "ForceEffectMode", winreg.REG_DWORD, 1),  # Fix transparency after debloat.
-            (winreg.KEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "EnableTransparency", winreg.REG_DWORD, 1)  # Fix transparency after debloat.
-
-
+            (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "EnableTransparency", winreg.REG_DWORD, 1)  # Fix transparency after debloat.
         ]
         for root_key, key_path, value_name, value_type, value in registry_modifications:
             try:
@@ -304,4 +302,4 @@ def finalize_installation():
 
 """ Run the program """
 if __name__ == "__main__":
-    run_winconfig()
+    run_edge_vanisher()
