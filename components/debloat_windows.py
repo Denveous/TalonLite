@@ -207,7 +207,7 @@ def run_winconfig():
             "-ClearStartAllUsers -DisableDVR -DisableStartRecommended; exit"
         )
         command = (
-            f"powershell.exe -ExecutionPolicy Bypass -Command \"& {{Set-ExecutionPolicy Bypass -Scope Process -Force; . '{script_path}' {arguments}}}\""
+            f"powershell.exe -ExecutionPolicy Bypass -Command \"{{Set-ExecutionPolicy Bypass -Scope Process -Force; & . '{script_path}' {arguments}}}\""
         )
         log(f"Executing PowerShell command: {command}")  
         windebloatprocess = subprocess.Popen(
@@ -246,6 +246,7 @@ def run_winconfig():
 
 """ Apply modifications done via the Windows registry """
 def apply_registry_changes():
+    return
     log("Applying registry changes...")
     try:
         registry_modifications = [
@@ -255,7 +256,7 @@ def apply_registry_changes():
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "AppCaptureEnabled", winreg.REG_DWORD, 0),  # Fix the Get an app for 'ms-gamingoverlay' popup
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR", "Value", winreg.REG_DWORD, 0),  # Disable Game DVR (Reduces FPS Drops)
             (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "MenuShowDelay", winreg.REG_SZ, "0"),  # Reduce menu delay for snappier UI
-            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 0),  # Disable minimize/maximize animations
+            (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop\\WindowMetrics", "MinAnimate", winreg.REG_DWORD, 1),  # Enable minimize/maximize animations
             (winreg.HKEY_CURRENT_USER, r"Control Panel\\Desktop", "DragFullWindows", winreg.REG_SZ, "1"),  # Show window contents while dragging
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "ExtendedUIHoverTime", winreg.REG_DWORD, 1),  # Reduce hover time for tooltips and UI elements
             (winreg.HKEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "HideFileExt", winreg.REG_DWORD, 0),  # Show file extensions in Explorer (useful for security and organization)
@@ -264,7 +265,11 @@ def apply_registry_changes():
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "DeferQualityUpdatesPeriodInDays", winreg.REG_DWORD, 4),  # Defer quality updates period in days
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "ProductVersion", winreg.REG_SZ, "Windows 11"),  # Set product version
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersion", winreg.REG_DWORD, 1),  # Set target release version
-            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersionInfo", winreg.REG_SZ, "24H2")  # Set target release version info
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "TargetReleaseVersionInfo", winreg.REG_SZ, "24H2"),  # Set target release version info
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows\\Dwm", "ForceEffectMode", winreg.REG_DWORD, 1),  # Fix transparency after debloat.
+            (winreg.KEY_CURRENT_USER, r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "EnableTransparency", winreg.REG_DWORD, 1)  # Fix transparency after debloat.
+
+
         ]
         for root_key, key_path, value_name, value_type, value in registry_modifications:
             try:
@@ -299,4 +304,4 @@ def finalize_installation():
 
 """ Run the program """
 if __name__ == "__main__":
-    run_edge_vanisher()
+    run_winconfig()

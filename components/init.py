@@ -19,7 +19,7 @@ import tempfile
 import shutil
 
 """ Establish the version of TalonLite """
-TALONLITE_VERSION = "0.2.2 (1.1.4 Talon Base)"
+TALONLITE_VERSION = "0.2.6 (1.1.4 Talon Base)"
 
 """ Set up the log file """
 LOG_FILE = "TalonLite.txt"
@@ -142,13 +142,6 @@ def main():
 
     """ Run the installation process """
     def perform_installation():
-        try:
-            logging.info("Applying background settings...")
-            apply_background.main()
-            logging.info("Background settings applied successfully.")
-        except Exception as e:
-            logging.error(f"Error applying background settings: {e}")
-        
         try:
             logging.info("Removing Microsoft Edge...")
             debloat_windows.run_edge_vanisher()
