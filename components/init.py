@@ -10,7 +10,6 @@ from defender_check import DefenderCheck
 from install_screen import InstallScreen
 import debloat_windows
 import windows_check
-import apply_background
 import time
 from PyQt5.QtCore import QTimer
 import platform
